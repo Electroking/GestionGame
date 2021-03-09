@@ -40,10 +40,12 @@ public class GameManager : MonoBehaviour
 
     //privates
     float timeOfDay;
-    int food;
+    int food = 0;
     Queue<Building> buildQueue;
+    [SerializeField] Vector3 terrainSize = Vector3.one;
     [SerializeField] int startVillagerCount = 5;
     [SerializeField] float spawnRadius = 1;
+    Bounds mapBounds;
 
     //publics
     public static GameManager instance = null;
@@ -53,6 +55,9 @@ public class GameManager : MonoBehaviour
         if (instance == null) instance = this;
         else if (instance != this) Destroy(gameObject);
         DontDestroyOnLoad(gameObject);
+
+        // TESTING
+        mapBounds = new Bounds(Vector3.zero, terrainSize * 2);
     }
 
     void Start()
@@ -63,12 +68,16 @@ public class GameManager : MonoBehaviour
 
     void StartGame()
     {
+        string villagerJobs = "";
         for (int i = 0; i < startVillagerCount; i++)
         {
             Villager villager = PoolManager.instance.UnpoolVillager();
             villager.transform.position = Quaternion.Euler(0, i * 360 / startVillagerCount, 0) * new Vector3(spawnRadius, 0, 0);
             villager.AssignJob((Job.Type)i, true);
+
+            villagerJobs += $"villager {i}: " + villager.job?.ToString() + "; ";
         }
+        Debug.Log(villagerJobs);
     }
 
     void StartDay()
@@ -99,5 +108,20 @@ public class GameManager : MonoBehaviour
 
     void ChangeGameSpeed(int timeScale) {
         Time.timeScale = timeScale;
+    }
+
+    public Vector3 GetBoundedPos(Vector3 position, Vector3 objectSize) {
+        Bounds adaptedBounds = mapBounds;
+        adaptedBounds.extents -= objectSize * 0.5f;
+        return adaptedBounds.ClosestPoint(position);
+        /*Vector3 relativePos = position - plane.transform.position;
+        Vector3 basePlaneSize = plane.transform.localScale * 5;
+        if (relativePos.x - objectSize.x < basePlaneSize.x && relativePos.z - objectSize.z < basePlaneSize.z
+            && relativePos.x + objectSize.x > -basePlaneSize.x && relativePos.z + objectSize.z > -basePlaneSize.z) {
+            return position;
+        }
+        Vector3 diffNeg = basePlaneSize + relativePos;
+        Vector3 diffPos = basePlaneSize - relativePos;
+        if (diffNeg.x >= diffPos)*/
     }
 }

@@ -21,7 +21,6 @@ public class Villager : MonoBehaviour
 
     public void AssignJob(Job.Type jobType, bool trueJobsOnly = false) {
         job = Job.GetNewJob(jobType, trueJobsOnly);
-        Debug.Log("new job: " + job?.ToString());
     }
 
     public bool Move(Vector3 targetPos)

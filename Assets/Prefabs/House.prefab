@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5438298649192571783}
   m_Layer: 0
   m_Name: House
-  m_TagString: Untagged
+  m_TagString: Village
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -44,8 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae02d5c200a386144bc605bf1243e0ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collider: {fileID: 0}
   type: 0
-  canbeBuilt: 0
+  isPlaced: 0
   isBuilt: 0
   inhabitant: {fileID: 0}
 --- !u!1 &3675999124792963793
@@ -62,7 +63,7 @@ GameObject:
   - component: {fileID: 3228974351467245997}
   m_Layer: 0
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Village
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -136,7 +137,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3675999124792963793}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}

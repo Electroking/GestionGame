@@ -32,14 +32,18 @@ public class UIManager : MonoBehaviour
         bool leftClick = Input.GetMouseButtonDown(0);
         bool rightClick = Input.GetMouseButtonDown(1);
 
+        if(rightClick) {
+            DeselectBuilding(true);
+        }
         if (_selectedBuilding != null)
         {
             if (GetTerrainPointHovered(out Vector3 terrainPoint))
             {
+                terrainPoint = GameManager.instance.GetBoundedPos(terrainPoint, _selectedBuilding.transform.localScale);
                 MoveSelectedBuilding(terrainPoint);
                 if (leftClick)
                 {
-                    PlaceSelectedBuilding(terrainPoint);
+                    PlaceSelectedBuilding();
                 }
             }
         }
@@ -47,25 +51,36 @@ public class UIManager : MonoBehaviour
 
     public void SelectBuilding(int buildingType)
     {
-        if (_selectedBuilding != null)
-        {
-            if (_selectedBuilding.type == (Building.Type)buildingType)
+        if (_selectedBuilding != null) {
+            Building.Type lastBuildingType = _selectedBuilding.type;
+            DeselectBuilding(true);
+            if (lastBuildingType == (Building.Type)buildingType)
             {
-                DeselectBuilding(true);
+                UpdateUI();
                 return;
             }
         }
         _selectedBuilding = PoolManager.instance.SpawnBuilding((Building.Type)buildingType);
+        _selectedBuilding.collider.isTrigger = false;
+        Rigidbody rb = _selectedBuilding.gameObject.AddComponent<Rigidbody>();
+        rb.isKinematic = true;
+        rb.useGravity = false;
+        rb.WakeUp();
         UpdateUI();
     }
 
-    public void DeselectBuilding(bool discard = false)
+    public void DeselectBuilding(bool destroy = false)
     {
-        if (_selectedBuilding != null && discard)
+        if (_selectedBuilding != null)
         {
-            Destroy(_selectedBuilding.gameObject);
+            if (destroy) {
+                Destroy(_selectedBuilding.gameObject);
+            } else if (_selectedBuilding.TryGetComponent(out Rigidbody rb)) {
+                _selectedBuilding.collider.isTrigger = true;
+                Destroy(rb);
+            }
+            _selectedBuilding = null;
         }
-        _selectedBuilding = null;
     }
 
     public void MoveSelectedBuilding(Vector3 terrainPoint)
@@ -79,10 +94,11 @@ public class UIManager : MonoBehaviour
         // change which building is selected, which are available, etc
     }
 
-    void PlaceSelectedBuilding(Vector3 position)
+    void PlaceSelectedBuilding()
     {
-        _selectedBuilding.Build();
-        DeselectBuilding();
+        if (_selectedBuilding.Place()) {
+            DeselectBuilding();
+        }
     }
 
     bool GetTerrainPointHovered(out Vector3 impactPoint, bool ignoreUI = false)

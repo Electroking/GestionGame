@@ -105,7 +105,7 @@ GameObject:
   - component: {fileID: 4901565646203953024}
   m_Layer: 0
   m_Name: Library
-  m_TagString: Untagged
+  m_TagString: Village
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -138,5 +138,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 4
-  canbeBuilt: 0
+  isPlaced: 0
   isBuilt: 0

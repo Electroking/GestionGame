@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6743897646294584728}
   m_Layer: 0
   m_Name: Farm
-  m_TagString: Untagged
+  m_TagString: Village
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -44,8 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0df1265de3f4e5947a76640d7c89b6ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collider: {fileID: 0}
   type: 2
-  canbeBuilt: 0
+  isPlaced: 0
   isBuilt: 0
 --- !u!1 &8598705621779587446
 GameObject:
@@ -61,7 +62,7 @@ GameObject:
   - component: {fileID: 6597739173169553830}
   m_Layer: 0
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Village
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
