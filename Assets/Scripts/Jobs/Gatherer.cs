@@ -8,6 +8,10 @@ public class Gatherer : Job {
     }
 
     public override void DoTheWork() {
-        
+
+    }
+
+    public override Vector3 GetWorkplacePos() {
+        return Vector3.zero;
     }
 }

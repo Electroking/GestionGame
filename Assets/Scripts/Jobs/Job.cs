@@ -1,13 +1,15 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 public abstract class Job {
     public enum Type {
         Builder, Miner, Lumberjack, Gatherer, Student
     }
 
-    public static Job GetNewJob(Job.Type jobType, bool trueJobsOnly = false) {
+    public static Job GetNewJob(Job.Type jobType, bool trueJobsOnly) {
         Job job = null;
         switch (jobType) {
             case Job.Type.Builder:
@@ -40,4 +42,8 @@ public abstract class Job {
     public abstract Vector3 GetWorkplacePos();
 
     public abstract void DoTheWork();
+
+    public override string ToString() {
+        return GetType().Name;
+    }
 }

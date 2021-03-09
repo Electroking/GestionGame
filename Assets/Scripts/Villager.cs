@@ -4,18 +4,26 @@ using UnityEngine;
 
 public class Villager : MonoBehaviour
 {
-    public static List<Villager> villagersList;
+    public static List<Villager> list;
     public int age;
     public bool isExhausted = false, isHungry = false;
-    //public Job job;
+    public Job job;
+
     void Start()
     {
         age = 0;
     }
+
     void Update()
     {
         
     }
+
+    public void AssignJob(Job.Type jobType, bool trueJobsOnly = false) {
+        job = Job.GetNewJob(jobType, trueJobsOnly);
+        Debug.Log("new job: " + job?.ToString());
+    }
+
     public bool Move(Vector3 targetPos)
     {
         Vector3 dir = targetPos - transform.position; // direction = player direction - ennemy direction
@@ -30,15 +38,17 @@ public class Villager : MonoBehaviour
         }
         return false;
     }
+
     public IEnumerator GoToWork()
     {
-        Vector3 workplace = job.GetWorkPlacePos();
+        Vector3 workplace = job.GetWorkplacePos();
         while(!Move(workplace))
         {
             yield return null;
         }
         job.DoTheWork();
     }
+
     public void GoToSleep()
     {
         House newHouse = FindObjectOfType<House>();
@@ -46,7 +56,7 @@ public class Villager : MonoBehaviour
         {
             if(transform.position != newHouse.transform.position)
             {
-                Move(newHouse);
+                Move(newHouse.transform.position);
                 gameObject.SetActive(false);
             }
         }

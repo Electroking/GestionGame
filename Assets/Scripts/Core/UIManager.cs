@@ -4,11 +4,20 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour {
+    public static UIManager instance = null;
+
     Canvas _canvas;
     Building _selectedBuilding = null;
     Vector3 _mousePos;
 
     private void Awake() {
+        if (instance == null) {
+            instance = this;
+        } else if (instance != this) {
+            Destroy(gameObject);
+        }
+        DontDestroyOnLoad(gameObject);
+
         _canvas = FindObjectOfType<Canvas>();
     }
 
@@ -21,11 +30,7 @@ public class UIManager : MonoBehaviour {
             if(GetTerrainPointHovered(out Vector3 terrainPoint)) {
                 MoveSelectedBuilding(terrainPoint);
                 if(leftClick) {
-                    if (PlaceSelectedBuilding(terrainPoint)) {
-                        // building placed
-                    } else {
-                        // building couldn't be placed
-                    }
+                    PlaceSelectedBuilding(terrainPoint);
                 }
             }
         }
@@ -58,10 +63,9 @@ public class UIManager : MonoBehaviour {
         // change which building is selected, which are available, etc
     }
 
-    bool PlaceSelectedBuilding(Vector3 position) {
-        bool buildSuccessful = _selectedBuilding.Build();
+    void PlaceSelectedBuilding(Vector3 position) {
+        _selectedBuilding.Build();
         DeselectBuilding();
-        return buildSuccessful;
     }
 
     bool GetTerrainPointHovered(out Vector3 impactPoint, bool ignoreUI = false) {

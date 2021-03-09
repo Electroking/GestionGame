@@ -6,21 +6,21 @@ public abstract class Building : MonoBehaviour
 {
 
     public static int nbHouses;
+    public Type type;
     public bool canbeBuilt;
     public bool isBuilt;
 
-    enum BuildingType
+    public enum Type
     {
         House, School, Farm, Museum, Library
     }
 
-    // Start is called before the first frame update
-    void Start()
+    protected virtual void Start()
     {
         
     }
 
-    public void Update()
+    protected virtual void Update()
     {
         
     }

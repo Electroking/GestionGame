@@ -33,13 +33,13 @@ public class PoolManager : MonoBehaviour {
     }
 
     public void Pool(Villager villager) {
-        villager.Reset();
+        //villager.Reset();
         villager.transform.localPosition = Vector3.zero;
-        villager.SetActive(true);
+        villager.gameObject.SetActive(true);
         _pooledVillagers.Enqueue(villager);
     }
 
-    public Villager UnPoolVillager() {
+    public Villager UnpoolVillager() {
         if (_pooledVillagers.Count > 0) {
             return _pooledVillagers.Dequeue();
         }

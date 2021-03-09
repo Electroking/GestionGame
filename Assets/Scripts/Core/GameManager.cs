@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
         set
         {
             _wood = value;
-            //UIManager.instance.UpdateUI();
+            UIManager.instance.UpdateUI();
         }
     }
     int _wood;
@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviour
         set
         {
             _stone = value;
-            //UIManager.instance.UpdateUI();
+            UIManager.instance.UpdateUI();
         }
     }
     int _stone;
@@ -63,11 +63,11 @@ public class GameManager : MonoBehaviour
 
     void StartGame()
     {
-        for (int i = 0; i <= 4; i++)
+        for (int i = 0; i < startVillagerCount; i++)
         {
-            //Villager villager = PoolManager.instance.UnpoolVillager();
-            //villager.transform.position = Quaternion.Euler(0, i * 360 / startVillagerCount, 0) * new Vector3(spawnRadius, 0, 0);
-            //villager.AssignJob((Job.Type)i);
+            Villager villager = PoolManager.instance.UnpoolVillager();
+            villager.transform.position = Quaternion.Euler(0, i * 360 / startVillagerCount, 0) * new Vector3(spawnRadius, 0, 0);
+            villager.AssignJob((Job.Type)i, true);
         }
     }
 
@@ -76,43 +76,28 @@ public class GameManager : MonoBehaviour
 
     }
 
-    void EndDay()
-    {
-        /*int foodDeficit = Villager.villagers.count - food;
-        if (foodDeficit > 0) 
-        {
-            for (int i = 0; i < foodDeficit; i++)
-            {
-                Villager.villagers[Random.Range(0, Villager.villagers.count - 1 - i)].Die();
+    void EndDay() {
+        int foodDeficit = Villager.list.Count - food;
+        if(foodDeficit > 0) {
+            for(int i = 0; i < foodDeficit; i++) {
+                Villager.list[Random.Range(0, Villager.list.Count - 1 - i)].Die();
             }
         }
-        */
 
-        /*bool gotEnoughHouses = House.nbHouses >= Villager.villagers.count;
-        if (gotEnoughHouses) 
-        {
-            int nbVillagers = Villager.villagers.count;
-            for (int i = 0; i < nbVillagers; i++)
-            {
-                Villager.villagers[i].GoToSleep();
+        bool gotEnoughHouses = House.nbHouses >= Villager.list.Count;
+        if(gotEnoughHouses) {
+            int nblist = Villager.list.Count;
+            for(int i = 0; i < nblist; i++) {
+                Villager.list[i].GoToSleep();
+            }
+        } else {
+            for(int i = 0; i < House.nbHouses; i++) {
+                Villager.list[Random.Range(0, Villager.list.Count - 1 - i)].GoToSleep();
             }
         }
-        else
-        {
-            for (int i = 0; i < House.nbHouses; i++)
-            {
-                Villager.villagers[Random.Range(0, Villager.villagers.count - 1 - i)]).GoToSleep();
-            }
-        }
-        */
     }
 
-    void ChangeGameSpeed(int timeScale)
-    {
+    void ChangeGameSpeed(int timeScale) {
         Time.timeScale = timeScale;
     }
-}
-public class Building
-{
-
 }
