@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,14 +16,16 @@ public abstract class Building : MonoBehaviour
         House, School, Farm, Museum, Library
     }
 
+
+
     protected virtual void Start()
     {
-        
+
     }
 
     protected virtual void Update()
     {
-        
+
     }
 
     protected void OnBuilt()
@@ -43,7 +46,7 @@ public abstract class Building : MonoBehaviour
     IEnumerator Construct(float nbSeconds)
     {
         float seconds = 0;
-        while (seconds<nbSeconds)
+        while (seconds < nbSeconds)
         {
             seconds += Time.deltaTime;
             yield return null;
@@ -66,3 +69,4 @@ public abstract class Building : MonoBehaviour
         }
     }
 }
+
