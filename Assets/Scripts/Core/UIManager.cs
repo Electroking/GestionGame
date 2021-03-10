@@ -32,7 +32,8 @@ public class UIManager : MonoBehaviour
         bool leftClick = Input.GetMouseButtonDown(0);
         bool rightClick = Input.GetMouseButtonDown(1);
 
-        if(rightClick) {
+        if (rightClick)
+        {
             DeselectBuilding(true);
         }
         if (_selectedBuilding != null)
@@ -51,7 +52,8 @@ public class UIManager : MonoBehaviour
 
     public void SelectBuilding(int buildingType)
     {
-        if (_selectedBuilding != null) {
+        if (_selectedBuilding != null)
+        {
             Building.Type lastBuildingType = _selectedBuilding.type;
             DeselectBuilding(true);
             if (lastBuildingType == (Building.Type)buildingType)
@@ -73,9 +75,12 @@ public class UIManager : MonoBehaviour
     {
         if (_selectedBuilding != null)
         {
-            if (destroy) {
+            if (destroy)
+            {
                 Destroy(_selectedBuilding.gameObject);
-            } else if (_selectedBuilding.TryGetComponent(out Rigidbody rb)) {
+            }
+            else if (_selectedBuilding.TryGetComponent(out Rigidbody rb))
+            {
                 _selectedBuilding.collider.isTrigger = true;
                 Destroy(rb);
             }
@@ -96,7 +101,8 @@ public class UIManager : MonoBehaviour
 
     void PlaceSelectedBuilding()
     {
-        if (_selectedBuilding.Place()) {
+        if (_selectedBuilding.Place())
+        {
             DeselectBuilding();
         }
     }

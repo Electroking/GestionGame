@@ -22,10 +22,12 @@ public abstract class Building : MonoBehaviour
         House, School, Farm, Museum, Library
     }
 
-    private void Awake() {
+    private void Awake()
+    {
         renderers = GetComponentsInChildren<MeshRenderer>();
         collider = GetComponentInChildren<Collider>();
-        for (int i=0; i<transform.childCount; i++) {
+        for (int i = 0; i < transform.childCount; i++)
+        {
             transform.GetChild(i).gameObject.tag = tag;
         }
     }
@@ -37,14 +39,16 @@ public abstract class Building : MonoBehaviour
 
     protected virtual void Update()
     {
-        if (!isPlaced) {
+        if (!isPlaced)
+        {
             CheckIfCanBePlaced();
             ChangeAlpha(canbePlaced ? 1 : 0.5f);
         }
     }
 
-    public bool Place() {
-        if(!CheckIfCanBePlaced()) { return false; }
+    public bool Place()
+    {
+        if (!CheckIfCanBePlaced()) { return false; }
         return isPlaced = true;
     }
 
@@ -65,14 +69,17 @@ public abstract class Building : MonoBehaviour
         OnBuilt();
     }
 
-    protected virtual void OnBuilt() {
+    protected virtual void OnBuilt()
+    {
 
     }
 
-    void ChangeAlpha(float newAlpha) {
+    void ChangeAlpha(float newAlpha)
+    {
         if (newAlpha == colorAlpha) { return; }
         Color matColor;
-        for (int i=0; i<renderers.Length; i++) {
+        for (int i = 0; i < renderers.Length; i++)
+        {
             matColor = renderers[i].material.color;
             matColor.a = newAlpha;
             renderers[i].material.color = matColor;
@@ -80,10 +87,13 @@ public abstract class Building : MonoBehaviour
         colorAlpha = newAlpha;
     }
 
-    bool CheckIfCanBePlaced() {
+    bool CheckIfCanBePlaced()
+    {
         Collider[] colliders = Physics.OverlapBox(transform.position, collider.transform.localScale * 0.5f, transform.rotation);
-        for(int i = 0; i < colliders.Length; i++) {
-            if(colliders[i].tag == "Village" && colliders[i] != collider) {
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            if (colliders[i].tag == "Village" && colliders[i] != collider)
+            {
                 return canbePlaced = false;
             }
         }
