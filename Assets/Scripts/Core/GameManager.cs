@@ -45,7 +45,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] Vector3 terrainSize = Vector3.one;
     [SerializeField] int startVillagerCount = 5;
     [SerializeField] float spawnRadius = 1;
-    Bounds mapBounds;
+    public Bounds mapBounds;
 
     //publics
     public static GameManager instance = null;

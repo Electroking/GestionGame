@@ -9,7 +9,6 @@ public class UIManager : MonoBehaviour
 
     Canvas _canvas;
     Building _selectedBuilding = null;
-    Vector3 _mousePos;
 
     private void Awake()
     {
@@ -25,10 +24,8 @@ public class UIManager : MonoBehaviour
 
         _canvas = FindObjectOfType<Canvas>();
     }
-
     private void Update()
     {
-        //_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         bool leftClick = Input.GetMouseButtonDown(0);
         bool rightClick = Input.GetMouseButtonDown(1);
 
@@ -93,14 +90,13 @@ public class UIManager : MonoBehaviour
     {
         // change which building is selected, which are available, etc
     }
-
     void PlaceSelectedBuilding()
     {
-        if (_selectedBuilding.Place()) {
+        if (_selectedBuilding.Place())
+        {
             DeselectBuilding();
         }
     }
-
     bool GetTerrainPointHovered(out Vector3 impactPoint, bool ignoreUI = false)
     {
         impactPoint = Vector3.zero;
