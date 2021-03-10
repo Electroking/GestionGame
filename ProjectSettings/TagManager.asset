@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Village
+  - Tree
+  - Mine
+  - Bush
   layers:
   - Default
   - TransparentFX

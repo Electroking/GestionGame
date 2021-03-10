@@ -4,14 +4,20 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public abstract class Job {
-    public enum Type {
+public abstract class Job
+{
+    public enum Type
+    {
         Builder, Miner, Lumberjack, Gatherer, Student
     }
 
-    public static Job GetNewJob(Job.Type jobType, bool trueJobsOnly) {
+    public Villager villager;
+
+    public static Job GetNewJob(Job.Type jobType, bool trueJobsOnly)
+    {
         Job job = null;
-        switch (jobType) {
+        switch (jobType)
+        {
             case Job.Type.Builder:
                 job = new Builder();
                 break;
@@ -25,7 +31,8 @@ public abstract class Job {
                 job = new Gatherer();
                 break;
             case Job.Type.Student:
-                if (!trueJobsOnly) {
+                if (!trueJobsOnly)
+                {
                     job = new Student();
                 }
                 break;
@@ -35,15 +42,17 @@ public abstract class Job {
         return job;
     }
 
-    public Job() {
+    public Job()
+    {
 
     }
 
     public abstract Vector3 GetWorkplacePos();
 
-    public abstract void DoTheWork();
+    public abstract IEnumerator DoTheWork();
 
-    public override string ToString() {
+    public override string ToString()
+    {
         return GetType().Name;
     }
 }
