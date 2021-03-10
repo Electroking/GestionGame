@@ -1,0 +1,96 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerCamera : MonoBehaviour
+{
+    float lastMousePosX;
+    [SerializeField] float speed = 10f, rotateSpeed = 10f, zMinZoom = -20, zMaxZoom = -80;
+    bool lmpIsUsed = false, zoomIsUsed = false, rotateIsUsed = false, translateIsUsed = false;
+    // Start is called before the first frame update
+    void Start()
+    {
+        Mathf.Clamp(transform.GetChild(0).GetChild(0).transform.position.z, zMaxZoom, zMinZoom);
+        lastMousePosX = Input.mousePosition.x;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        MoveCam();
+        if(!lmpIsUsed)
+        {
+            lastMousePosX = Input.mousePosition.x;
+        }
+    }
+    void MoveCam()
+    {
+        LateralMoveCam();
+        RotationMoveCam();
+        ZoomCam();
+    }
+    void LateralMoveCam()
+    {
+        translateIsUsed = false;
+        if (!rotateIsUsed)
+        {
+            Vector3 translation = Vector3.zero;
+            if (Input.mousePosition.x >= (Screen.width - 1f)) //verify if mouseX >= to the screen width
+            {
+                translation = new Vector3(2, 0, 0); //Move the cam right 2 by 2
+            }
+            else if (Input.mousePosition.x <= 1f) //verify if mouseX <= to 0 which is the min of screen width
+            {
+                translation = new Vector3(-2, 0, 0); //Move the cam left 2 by 2
+            }
+            if (Input.mousePosition.y >= (Screen.height - 1f)) //verify if mouseY >= to the screen width
+            {
+                translation = new Vector3(0, 0, 2); //Move the cam up 2 by 2
+            }
+            else if (Input.mousePosition.y <= 1f) //verify if mouseY <= to 0 which is the min of screen height
+            {
+                translation = new Vector3(0, 0, -2); //Move the cam down 2 by 2
+            }
+            if(translation != Vector3.zero)
+            {
+                translateIsUsed = true;
+                transform.Translate(translation * Time.deltaTime * speed);
+                transform.position = GameManager.instance.GetBoundedPos(transform.position, Vector3.zero);
+            }
+        }
+    }
+    void RotationMoveCam()
+    {
+        lmpIsUsed = false;
+        rotateIsUsed = false;
+        if (Input.GetMouseButton(1) && !zoomIsUsed && !translateIsUsed)
+        {
+            lmpIsUsed = true;
+            rotateIsUsed = true;
+            transform.Rotate(Vector3.up * Time.deltaTime * rotateSpeed * Mathf.Sign(Input.mousePosition.x - lastMousePosX));
+        }
+    }
+    void ZoomCam()
+    {
+        zoomIsUsed = false;
+        if (!rotateIsUsed)
+        {
+            if (Input.mouseScrollDelta.y > 0f)
+            {
+                zoomIsUsed = true;
+                if (transform.GetChild(0).GetChild(0).transform.localPosition.z < zMinZoom)
+                {
+                    transform.GetChild(0).GetChild(0).transform.localPosition += new Vector3(0, 0, 5);
+                }
+            }
+            if (Input.mouseScrollDelta.y < 0f)
+            {
+                zoomIsUsed = true;
+                if (transform.GetChild(0).GetChild(0).transform.localPosition.z > zMaxZoom)
+                {
+                    transform.GetChild(0).GetChild(0).transform.localPosition -= new Vector3(0, 0, 5);
+                }
+            }
+        }
+    }
+}

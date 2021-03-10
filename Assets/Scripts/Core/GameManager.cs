@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
         {
             _wood = value;
             UIManager.instance.UpdateUI();
+            Debug.Log("Wood" + Wood);
         }
     }
     int _wood;
@@ -34,18 +35,32 @@ public class GameManager : MonoBehaviour
         {
             _stone = value;
             UIManager.instance.UpdateUI();
+            Debug.Log("Stone" + Stone);
         }
     }
     int _stone;
+    public int Food
+    {
+        get
+        {
+            return _food;
+        }
+        set
+        {
+            _food = value;
+            UIManager.instance.UpdateUI();
+            Debug.Log("Food" + Food);
+        }
+    }
+    int _food;
 
     //privates
     float timeOfDay;
-    int food = 0;
     Queue<Building> buildQueue;
     [SerializeField] Vector3 terrainSize = Vector3.one;
     [SerializeField] int startVillagerCount = 5;
     [SerializeField] float spawnRadius = 1;
-    Bounds mapBounds;
+    public Bounds mapBounds;
 
     //publics
     public static GameManager instance = null;
@@ -65,6 +80,16 @@ public class GameManager : MonoBehaviour
         StartGame();
     }
 
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Villager villager = PoolManager.instance.UnpoolVillager();
+            villager.transform.position = Vector3.zero;
+            villager.AssignJob((Job.Type)Random.Range(0, 4), true);
+        }
+    }
+
 
     void StartGame()
     {
@@ -78,39 +103,85 @@ public class GameManager : MonoBehaviour
             villagerJobs += $"villager {i}: " + villager.job?.ToString() + "; ";
         }
         Debug.Log(villagerJobs);
+
+        GetAllMines();
+        GetAllTrees();
+        GetAllBushes();
+
+        StartDay();
+    }
+    void GetAllMines()
+    {
+        Miner.mineArray = GameObject.FindGameObjectsWithTag("Mine");
+        for (int i = 0; i < Miner.mineArray.Length; i++)
+        {
+            Miner.mineDic.Add(Miner.mineArray[i], null);
+        }
+    }
+    void GetAllTrees()
+    {
+        Lumberjack.treeArray = GameObject.FindGameObjectsWithTag("Tree");
+        for (int i = 0; i < Lumberjack.treeArray.Length; i++)
+        {
+            Lumberjack.treeDic.Add(Lumberjack.treeArray[i], null);
+        }
+    }
+    void GetAllBushes()
+    {
+        Gatherer.bushArray = GameObject.FindGameObjectsWithTag("Bush");
+        for (int i = 0; i < Gatherer.bushArray.Length; i++)
+        {
+            Gatherer.bushDic.Add(Gatherer.bushArray[i], null);
+        }
     }
 
     void StartDay()
     {
-
+        /*
+        int nblist = Villager.list.Count;
+        for (int i = 0; i < nblist; i++)
+        {
+            StartCoroutine(Villager.list[i].GoToWork());
+        }
+        */
     }
 
-    void EndDay() {
-        int foodDeficit = Villager.list.Count - food;
-        if(foodDeficit > 0) {
-            for(int i = 0; i < foodDeficit; i++) {
+    void EndDay()
+    {
+        int foodDeficit = Villager.list.Count - Food;
+        if (foodDeficit > 0)
+        {
+            for (int i = 0; i < foodDeficit; i++)
+            {
                 Villager.list[Random.Range(0, Villager.list.Count - 1 - i)].Die();
             }
         }
 
         bool gotEnoughHouses = House.nbHouses >= Villager.list.Count;
-        if(gotEnoughHouses) {
+        if (gotEnoughHouses)
+        {
             int nblist = Villager.list.Count;
-            for(int i = 0; i < nblist; i++) {
+            for (int i = 0; i < nblist; i++)
+            {
                 Villager.list[i].GoToSleep();
             }
-        } else {
-            for(int i = 0; i < House.nbHouses; i++) {
+        }
+        else
+        {
+            for (int i = 0; i < House.nbHouses; i++)
+            {
                 Villager.list[Random.Range(0, Villager.list.Count - 1 - i)].GoToSleep();
             }
         }
     }
 
-    void ChangeGameSpeed(int timeScale) {
+    void ChangeGameSpeed(int timeScale)
+    {
         Time.timeScale = timeScale;
     }
 
-    public Vector3 GetBoundedPos(Vector3 position, Vector3 objectSize) {
+    public Vector3 GetBoundedPos(Vector3 position, Vector3 objectSize)
+    {
         Bounds adaptedBounds = mapBounds;
         adaptedBounds.extents -= objectSize * 0.5f;
         return adaptedBounds.ClosestPoint(position);
