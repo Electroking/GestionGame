@@ -34,7 +34,7 @@ public abstract class Building : MonoBehaviour
 
     protected virtual void Start()
     {
-
+        
     }
 
     protected virtual void Update()
@@ -66,6 +66,7 @@ public abstract class Building : MonoBehaviour
             yield return null;
         }
         // at this point, the building has been built
+        Debug.Log("Construct");
         OnBuilt();
     }
 
@@ -93,6 +94,10 @@ public abstract class Building : MonoBehaviour
         for (int i = 0; i < colliders.Length; i++)
         {
             if (colliders[i].tag == "Village" && colliders[i] != collider)
+            {
+                return canbePlaced = false;
+            }
+            else if (colliders[i].tag == "Villager")
             {
                 return canbePlaced = false;
             }
