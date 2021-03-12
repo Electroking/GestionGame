@@ -5,4 +5,8 @@ using UnityEngine;
 public class House : Building
 {
     public Villager inhabitant;
+
+    protected override void Update()
+    {
+    }
 }

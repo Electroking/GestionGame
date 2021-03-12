@@ -195,4 +195,13 @@ public class GameManager : MonoBehaviour
         Vector3 diffPos = basePlaneSize - relativePos;
         if (diffNeg.x >= diffPos)*/
     }
+
+    public float GetTerrainHeight(Vector3 position) {
+        Vector3 rayOrigin = position;
+        rayOrigin.y = 100;
+        if(Physics.Raycast(rayOrigin, -Vector3.up, out RaycastHit hit, 200, 1 << LayerMask.NameToLayer(Utils.LAYER_TERRAIN))) {
+            return hit.point.y;
+        }
+        return 0;
+    }
 }

@@ -4,9 +4,10 @@
 TagManager:
   serializedVersion: 2
   tags:
+  - Villager
   - Village
-  - Tree
   - Mine
+  - Tree
   - Bush
   layers:
   - Default
