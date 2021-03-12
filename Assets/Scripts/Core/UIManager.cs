@@ -9,6 +9,10 @@ public class UIManager : MonoBehaviour
 
     Canvas _canvas;
     Building _selectedBuilding = null;
+    [SerializeField] Text foodText = null, woodText = null, stoneText = null;
+    GameManager gm;
+    [SerializeField] PopUpInfo prefabPopUp = null;
+    PopUpInfo popUpPanel;
 
     private void Awake()
     {
@@ -23,6 +27,11 @@ public class UIManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         _canvas = FindObjectOfType<Canvas>();
+    }
+    void Start()
+    {
+        gm = GameManager.instance;
+        UpdateUI();
     }
     private void Update()
     {
@@ -45,6 +54,10 @@ public class UIManager : MonoBehaviour
                 }
             }
         }
+    }
+    void LateUpdate()
+    {
+        UpdateUI();
     }
 
     public void SelectBuilding(int buildingType)
@@ -94,6 +107,9 @@ public class UIManager : MonoBehaviour
     public void UpdateUI()
     {
         // change which building is selected, which are available, etc
+        foodText.text = "Food : " + gm.Food;
+        woodText.text = "Wood : " + gm.Wood;
+        stoneText.text = "Stone : " + gm.Stone;
     }
     void PlaceSelectedBuilding()
     {
@@ -113,5 +129,22 @@ public class UIManager : MonoBehaviour
             return true;
         }
         return false;
+    }
+    public void SpawnPopUpInfo(int numType)
+    {
+        if( popUpPanel == null)
+        {
+            popUpPanel = Instantiate(prefabPopUp,_canvas.transform);
+        }
+        else
+        {
+            popUpPanel.gameObject.SetActive(true);
+        }
+        popUpPanel.transform.position = Input.mousePosition;
+        popUpPanel.SetText();
+    }
+    public void ClosePopUpInfo()
+    {
+        popUpPanel.gameObject.SetActive(false);
     }
 }
