@@ -5,8 +5,9 @@ using UnityEngine;
 public class Villager : MonoBehaviour
 {
     public static List<Villager> list = new List<Villager>();
+    public static List<Villager> listHasWorked = new List<Villager>();
     public int age;
-    public bool isExhausted = false, isHungry = false;
+    public bool isExhausted = false;
     public Job job;
 
     void Awake()
@@ -62,6 +63,7 @@ public class Villager : MonoBehaviour
         {
             yield return null;
         }
+        listHasWorked.Add(this);
         StartCoroutine(job.DoTheWork());
     }
 
@@ -74,6 +76,7 @@ public class Villager : MonoBehaviour
             {
                 Move(newHouse.transform.position);
                 gameObject.SetActive(false);
+                isExhausted = false;
             }
         }
     }

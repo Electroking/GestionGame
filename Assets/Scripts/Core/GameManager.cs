@@ -108,7 +108,7 @@ public class GameManager : MonoBehaviour
         GetAllTrees();
         GetAllBushes();
 
-        StartDay();
+        //StartDay();
     }
     void GetAllMines()
     {
@@ -137,13 +137,14 @@ public class GameManager : MonoBehaviour
 
     void StartDay()
     {
-        /*
         int nblist = Villager.list.Count;
         for (int i = 0; i < nblist; i++)
         {
-            StartCoroutine(Villager.list[i].GoToWork());
+            if (!Villager.list[i].isExhausted)
+            {
+                StartCoroutine(Villager.list[i].GoToWork());
+            }
         }
-        */
     }
 
     void EndDay()
@@ -157,20 +158,25 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        bool gotEnoughHouses = House.nbHouses >= Villager.list.Count;
+        int listCount = Villager.listHasWorked.Count;
+        for (int i = 0; i < listCount; i++)
+        {
+            Villager.listHasWorked[i].isExhausted = true;
+        }
+
+        bool gotEnoughHouses = House.nbHouses >= Villager.listHasWorked.Count;
         if (gotEnoughHouses)
         {
-            int nblist = Villager.list.Count;
-            for (int i = 0; i < nblist; i++)
+            for (int i = 0; i < listCount; i++)
             {
-                Villager.list[i].GoToSleep();
+                Villager.listHasWorked[i].GoToSleep();
             }
         }
         else
         {
             for (int i = 0; i < House.nbHouses; i++)
             {
-                Villager.list[Random.Range(0, Villager.list.Count - 1 - i)].GoToSleep();
+                Villager.listHasWorked[Random.Range(0, Villager.listHasWorked.Count - 1 - i)].GoToSleep();
             }
         }
     }
@@ -196,10 +202,12 @@ public class GameManager : MonoBehaviour
         if (diffNeg.x >= diffPos)*/
     }
 
-    public float GetTerrainHeight(Vector3 position) {
+    public float GetTerrainHeight(Vector3 position)
+    {
         Vector3 rayOrigin = position;
         rayOrigin.y = 100;
-        if(Physics.Raycast(rayOrigin, -Vector3.up, out RaycastHit hit, 200, 1 << LayerMask.NameToLayer(Utils.LAYER_TERRAIN))) {
+        if (Physics.Raycast(rayOrigin, -Vector3.up, out RaycastHit hit, 200, 1 << LayerMask.NameToLayer(Utils.LAYER_TERRAIN)))
+        {
             return hit.point.y;
         }
         return 0;
