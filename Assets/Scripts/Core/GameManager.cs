@@ -61,6 +61,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] int startVillagerCount = 5;
     [SerializeField] float spawnRadius = 1;
     public Bounds mapBounds;
+    public TerrainGenerator terrain;
 
     //publics
     public static GameManager instance = null;
@@ -89,7 +90,6 @@ public class GameManager : MonoBehaviour
             villager.AssignJob((Job.Type)Random.Range(0, 4), true);
         }
     }
-
 
     void StartGame()
     {

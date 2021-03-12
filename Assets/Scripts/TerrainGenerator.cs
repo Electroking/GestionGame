@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class TerrainGenerator : MonoBehaviour {
     [SerializeField] bool regenerateMap = true;
@@ -9,9 +10,15 @@ public class TerrainGenerator : MonoBehaviour {
     [SerializeField] float scale = 1;
     [SerializeField] Vector2 offset = Vector2.zero;
     Terrain _terrain;
+    NavMeshSurface _surface;
 
     private void Awake() {
         _terrain = GetComponent<Terrain>();
+        _surface = GetComponentInParent<NavMeshSurface>();
+    }
+
+    private void Start() {
+        GameManager.instance.terrain = this;
     }
 
     private void Update() {
@@ -27,10 +34,11 @@ public class TerrainGenerator : MonoBehaviour {
         tData.size = new Vector3(terrainSize, terrainHeight, terrainSize);
         tData.SetHeights(0, 0, GenerateHeights());
         transform.position = new Vector3(-terrainSize * 0.5f, 0, -terrainSize * 0.5f);
+        UpdateNavMesh();
     }
 
     float[,] GenerateHeights() {
-        float[,] heights = new float[terrainSize, terrainSize];
+        float[,] heights = new float[_terrain.terrainData.heightmapResolution, _terrain.terrainData.heightmapResolution];
         for (int y=0; y<heights.GetLength(1); y++) {
             for(int x = 0; x < heights.GetLength(0); x++) {
                 heights[x, y] = CalculateHeight(x, y);
@@ -43,5 +51,9 @@ public class TerrainGenerator : MonoBehaviour {
         float xCoord = x / (float)terrainSize * scale + offset.x;
         float yCoord = y / (float)terrainSize * scale + offset.y;
         return Mathf.PerlinNoise(xCoord, yCoord);
+    }
+
+    public void UpdateNavMesh() {
+        _surface.BuildNavMesh();
     }
 }
