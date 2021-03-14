@@ -44,9 +44,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c65e285ffa0f105479bb3d104b758b56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collider: {fileID: 0}
   type: 1
   isPlaced: 0
   isBuilt: 0
+  resourceS: 2
+  resourceW: 2
+  nbBuilder: 0
   students: []
 --- !u!1 &4008050460020026629
 GameObject:

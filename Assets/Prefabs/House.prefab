@@ -48,6 +48,9 @@ MonoBehaviour:
   type: 0
   isPlaced: 0
   isBuilt: 0
+  resourceS: 2
+  resourceW: 2
+  nbBuilder: 0
   inhabitant: {fileID: 0}
 --- !u!1 &3675999124792963793
 GameObject:

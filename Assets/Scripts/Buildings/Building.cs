@@ -13,9 +13,13 @@ public abstract class Building : MonoBehaviour
     bool canbePlaced = false;
     public bool isPlaced = false;
     public bool isBuilt = false;
+    public int resourceS=2;
+    public int resourceW=2;
+    public float nbBuilder;
 
     MeshRenderer[] renderers;
     float colorAlpha = 1;
+    List<Building> unBuiltBuildings = new List<Building>();
 
     public enum Type
     {
@@ -34,7 +38,7 @@ public abstract class Building : MonoBehaviour
 
     protected virtual void Start()
     {
-        
+        transform.localScale *= 0.5f;
     }
 
     protected virtual void Update()
@@ -42,13 +46,16 @@ public abstract class Building : MonoBehaviour
         if (!isPlaced)
         {
             CheckIfCanBePlaced();
-            ChangeAlpha(canbePlaced ? 1 : 0.5f);
+            unBuiltBuildings.Add(this);
+            //ChangeAlpha(canbePlaced ? 1 : 0.5f);
         }
     }
 
     public bool Place()
     {
         if (!CheckIfCanBePlaced()) { return false; }
+        if (!CheckifEnoughResources()) { return false; }
+            ExpendResources();
         return isPlaced = true;
     }
 
@@ -57,15 +64,31 @@ public abstract class Building : MonoBehaviour
         StartCoroutine(nameof(Construct), 6f);
     }
 
+
+    private void ExpendResources()
+    {
+        GameManager.instance.Stone = GameManager.instance.Stone - resourceS;
+        GameManager.instance.Stone = GameManager.instance.Stone - resourceW;
+        //Build();
+    }
+
+    private bool CheckifEnoughResources()
+    {
+        return GameManager.instance.Stone >= resourceS && GameManager.instance.Wood >= resourceW;
+    }
+
     IEnumerator Construct(float nbSeconds)
     {
+        
         float seconds = 0;
         while (seconds < nbSeconds)
         {
             seconds += Time.deltaTime;
             yield return null;
+            
         }
         // at this point, the building has been built
+        transform.localScale *= 2.5f;
         Debug.Log("Construct");
         OnBuilt();
     }

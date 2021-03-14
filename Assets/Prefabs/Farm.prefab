@@ -48,6 +48,9 @@ MonoBehaviour:
   type: 2
   isPlaced: 0
   isBuilt: 0
+  resourceS: 2
+  resourceW: 2
+  nbBuilder: 0
 --- !u!1 &8598705621779587446
 GameObject:
   m_ObjectHideFlags: 0
