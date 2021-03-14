@@ -10,30 +10,29 @@ public class TerrainGenerator : MonoBehaviour {
     [SerializeField] float scale = 1;
     [SerializeField] Vector2 offset = Vector2.zero;
     Terrain _terrain;
+    TerrainCollider _collider;
     NavMeshSurface _surface;
 
     private void Awake() {
         _terrain = GetComponent<Terrain>();
+        _collider = GetComponent<TerrainCollider>();
         _surface = GetComponentInParent<NavMeshSurface>();
     }
 
-    private void Start() {
-        GameManager.instance.terrain = this;
-    }
-
     private void Update() {
-        if (regenerateMap) {
+        /*if (regenerateMap) {
             GenerateTerrain();
             regenerateMap = false;
-        }
+        }*/
     }
 
-    void GenerateTerrain() {
+    public void GenerateTerrain() {
+        transform.position = new Vector3(-terrainSize * 0.5f, 0, -terrainSize * 0.5f);
         TerrainData tData = _terrain.terrainData;
         tData.heightmapResolution = terrainSize + 1;
         tData.size = new Vector3(terrainSize, terrainHeight, terrainSize);
         tData.SetHeights(0, 0, GenerateHeights());
-        transform.position = new Vector3(-terrainSize * 0.5f, 0, -terrainSize * 0.5f);
+        _collider.terrainData = tData;
         UpdateNavMesh();
     }
 

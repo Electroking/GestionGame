@@ -44,9 +44,9 @@ public class UIManager : MonoBehaviour
         }
         if (_selectedBuilding != null)
         {
-            if (GetTerrainPointHovered(out Vector3 terrainPoint))
+            if (GetTerrainPointHovered(out Vector3 terrainPoint, true))
             {
-                terrainPoint = GameManager.instance.GetBoundedPos(terrainPoint, _selectedBuilding.transform.localScale);
+                
                 MoveSelectedBuilding(terrainPoint);
                 if (leftClick)
                 {
@@ -100,16 +100,17 @@ public class UIManager : MonoBehaviour
 
     public void MoveSelectedBuilding(Vector3 terrainPoint)
     {
+        terrainPoint = gm.GetTerrainPos(terrainPoint, _selectedBuilding.transform.localScale);
         _selectedBuilding.transform.position = terrainPoint;
         _selectedBuilding.transform.Rotate(0, Input.mouseScrollDelta.y * 45, 0);
     }
 
     public void UpdateUI()
     {
-        // change which building is selected, which are available, etc
+        /*/ change which building is selected, which are available, etc
         foodText.text = "Food : " + gm.Food;
         woodText.text = "Wood : " + gm.Wood;
-        stoneText.text = "Stone : " + gm.Stone;
+        stoneText.text = "Stone : " + gm.Stone;*/
     }
     void PlaceSelectedBuilding()
     {

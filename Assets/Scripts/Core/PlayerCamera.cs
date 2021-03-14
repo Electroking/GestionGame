@@ -55,7 +55,7 @@ public class PlayerCamera : MonoBehaviour
             {
                 translateIsUsed = true;
                 transform.Translate(translation * Time.deltaTime * speed);
-                transform.position = GameManager.instance.GetBoundedPos(transform.position, Vector3.zero);
+                transform.position = GameManager.instance.GetTerrainPos(transform.position);
             }
         }
     }

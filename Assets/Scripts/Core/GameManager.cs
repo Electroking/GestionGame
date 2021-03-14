@@ -74,6 +74,8 @@ public class GameManager : MonoBehaviour
 
         // TESTING
         mapBounds = new Bounds(Vector3.zero, terrainSize * 2);
+        Wood = 10;
+        Stone = 10;
     }
 
     void Start()
@@ -83,21 +85,25 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        /*if (Input.GetMouseButtonDown(0))
         {
             Villager villager = PoolManager.instance.UnpoolVillager();
             villager.transform.position = Vector3.zero;
             villager.AssignJob((Job.Type)Random.Range(0, 4), true);
-        }
+        }*/
     }
 
     void StartGame()
     {
+        // +++ GENERATE TERRAIN +++ //
+        terrain = FindObjectOfType<TerrainGenerator>();
+        terrain.GenerateTerrain();
+
+        // +++ SPAWN VILLAGERS +++ //
         string villagerJobs = "";
-        for (int i = 0; i < startVillagerCount; i++)
-        {
-            Villager villager = PoolManager.instance.UnpoolVillager();
-            villager.transform.position = Quaternion.Euler(0, i * 360 / startVillagerCount, 0) * new Vector3(spawnRadius, 0, 0);
+        for (int i = 0; i < startVillagerCount; i++) {
+            Vector3 position = Quaternion.Euler(0, i * 360 / startVillagerCount, 0) * new Vector3(spawnRadius, 0, 0);
+            Villager villager = PoolManager.instance.SpawnVillager(position);
             villager.AssignJob((Job.Type)i, true);
 
             villagerJobs += $"villager {i}: " + villager.job?.ToString() + "; ";
@@ -169,6 +175,7 @@ public class GameManager : MonoBehaviour
         {
             for (int i = 0; i < listCount; i++)
             {
+                Villager.listHasWorked[i].StopAllCoroutines();
                 Villager.listHasWorked[i].GoToSleep();
             }
         }
@@ -184,6 +191,13 @@ public class GameManager : MonoBehaviour
     void ChangeGameSpeed(int timeScale)
     {
         Time.timeScale = timeScale;
+    }
+
+    public Vector3 GetTerrainPos(Vector3 position) => GetTerrainPos(position, Vector3.zero);
+    public Vector3 GetTerrainPos(Vector3 position, Vector3 objectSize) {
+        Vector3 terrainPos = GetBoundedPos(position, objectSize);
+        terrainPos.y = GetTerrainHeight(terrainPos);
+        return terrainPos;
     }
 
     public Vector3 GetBoundedPos(Vector3 position, Vector3 objectSize)
@@ -206,7 +220,7 @@ public class GameManager : MonoBehaviour
     {
         Vector3 rayOrigin = position;
         rayOrigin.y = 100;
-        if (Physics.Raycast(rayOrigin, -Vector3.up, out RaycastHit hit, 200, 1 << LayerMask.NameToLayer(Utils.LAYER_TERRAIN)))
+        if (Physics.Raycast(rayOrigin, -Vector3.up, out RaycastHit hit, 250, 1<<LayerMask.NameToLayer(Utils.LAYER_TERRAIN)))
         {
             return hit.point.y;
         }

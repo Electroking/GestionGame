@@ -22,7 +22,6 @@ public class Villager : MonoBehaviour
 
     void Update()
     {
-
     }
 
     public void AssignJob(Job.Type jobType, bool trueJobsOnly = false)
@@ -53,11 +52,11 @@ public class Villager : MonoBehaviour
     public IEnumerator GoToWork()
     {
         if (job == null) yield break;
-        while (job.GetWorkplacePos() == Vector3.zero)
+        Vector3 workplace;
+        while ((workplace = job.GetWorkplacePos()) == Vector3.zero)
         {
             yield return null;
         }
-        Vector3 workplace = job.GetWorkplacePos();
         Debug.Log(workplace);
         while (!Move(workplace))
         {

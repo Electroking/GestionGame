@@ -46,7 +46,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   age: 0
   isExhausted: 0
-  isHungry: 0
 --- !u!1 &8728049425887482452
 GameObject:
   m_ObjectHideFlags: 0

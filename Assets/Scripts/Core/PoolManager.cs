@@ -52,12 +52,14 @@ public class PoolManager : MonoBehaviour
         {
             return _pooledVillagers.Dequeue();
         }
-        return SpawnVillager();
+        return Instantiate(prefabVillager, _poolVillager);
     }
 
-    Villager SpawnVillager()
+    public Villager SpawnVillager(Vector3 spawnPoint)
     {
-        return Instantiate(prefabVillager, _poolVillager);
+        Villager villager = UnpoolVillager();
+        villager.transform.position = GameManager.instance.GetTerrainPos(spawnPoint);
+        return villager;
     }
 
     public Building SpawnBuilding(Building.Type buildingType)

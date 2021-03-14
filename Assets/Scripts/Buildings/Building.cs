@@ -6,20 +6,23 @@ using UnityEngine;
 public abstract class Building : MonoBehaviour
 {
     public static int nbHouses;
+    public static List<Building> unbuiltList = new List<Building>();
 
     public new Collider collider;
     public Type type;
 
-    bool canbePlaced = false;
+    public List<Villager> builders = new List<Villager>();
     public bool isPlaced = false;
     public bool isBuilt = false;
-    public int resourceS=2;
-    public int resourceW=2;
+    public int resourceS;
+    public int resourceW;
     public float nbBuilder;
 
+    float _progression = 0;
     MeshRenderer[] renderers;
+    GameObject model;
+    bool canbePlaced = false;
     float colorAlpha = 1;
-    List<Building> unBuiltBuildings = new List<Building>();
 
     public enum Type
     {
@@ -28,6 +31,7 @@ public abstract class Building : MonoBehaviour
 
     private void Awake()
     {
+        model = transform.GetChild(0).gameObject;
         renderers = GetComponentsInChildren<MeshRenderer>();
         collider = GetComponentInChildren<Collider>();
         for (int i = 0; i < transform.childCount; i++)
@@ -46,7 +50,6 @@ public abstract class Building : MonoBehaviour
         if (!isPlaced)
         {
             CheckIfCanBePlaced();
-            unBuiltBuildings.Add(this);
             //ChangeAlpha(canbePlaced ? 1 : 0.5f);
         }
     }
@@ -55,20 +58,27 @@ public abstract class Building : MonoBehaviour
     {
         if (!CheckIfCanBePlaced()) { return false; }
         if (!CheckifEnoughResources()) { return false; }
-            ExpendResources();
+        ExpendResources();
+        unbuiltList.Add(this);
         return isPlaced = true;
     }
 
-    public void Build()
+    public void Build(float amount)
     {
-        StartCoroutine(nameof(Construct), 6f);
+        if (isBuilt) { return; }
+        _progression = Mathf.Clamp01(_progression + amount);
+        transform.localScale = Vector3.one * 0.5f * (_progression + 1);
+        if (_progression >= 1) {
+            OnBuilt();
+        }
+        //StartCoroutine(nameof(Construct), 6f);
     }
 
 
     private void ExpendResources()
     {
-        GameManager.instance.Stone = GameManager.instance.Stone - resourceS;
-        GameManager.instance.Stone = GameManager.instance.Stone - resourceW;
+        GameManager.instance.Stone -= resourceS;
+        GameManager.instance.Wood -= resourceW;
         //Build();
     }
 
@@ -95,7 +105,9 @@ public abstract class Building : MonoBehaviour
 
     protected virtual void OnBuilt()
     {
-
+        isBuilt = true;
+        unbuiltList.Remove(this);
+        Debug.Log(name + " has been built!");
     }
 
     void ChangeAlpha(float newAlpha)
