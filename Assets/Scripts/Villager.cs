@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Villager : MonoBehaviour
 {
@@ -10,8 +11,13 @@ public class Villager : MonoBehaviour
     public bool isExhausted = false;
     public Job job;
 
+    NavMeshAgent _agent;
+    bool _isWorking = false, _isMoving = false;
+
     void Awake()
     {
+        _agent = GetComponent<NavMeshAgent>();
+
         list.Add(this);
     }
     void Start()
@@ -22,6 +28,9 @@ public class Villager : MonoBehaviour
 
     void Update()
     {
+        if (!_isWorking && !isExhausted) {
+            StartCoroutine(GoToWork());
+        }
     }
 
     public void AssignJob(Job.Type jobType, bool trueJobsOnly = false)
@@ -32,6 +41,17 @@ public class Villager : MonoBehaviour
 
     public bool Move(Vector3 targetPos)
     {
+        if (!_isMoving) {
+            bool validDestination = _agent.SetDestination(targetPos);
+            Debug.Log($"validDestination: {validDestination}");
+            _isMoving = true;
+        }
+        if (transform.position.x == targetPos.x && transform.position.z == targetPos.z) {
+            Debug.Log("==> Arrived at destination.");
+            _isMoving = false;
+            return true;
+        }
+        return false;
         /*
         Vector3 dir = targetPos - transform.position; // direction = player direction - ennemy direction
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg; //define angle with both axis multiplied and convert Radiant to Degres
@@ -45,13 +65,14 @@ public class Villager : MonoBehaviour
         }
         return false;
         */
-        transform.position = Vector3.Lerp(transform.position, targetPos, Time.deltaTime * 3 / Vector3.Distance(transform.position, targetPos));
-        return transform.position == targetPos;
+        /*transform.position = Vector3.Lerp(transform.position, targetPos, Time.deltaTime * 3 / Vector3.Distance(transform.position, targetPos));
+        return transform.position == targetPos;*/
     }
 
     public IEnumerator GoToWork()
     {
         if (job == null) yield break;
+        _isWorking = true;
         Vector3 workplace;
         while ((workplace = job.GetWorkplacePos()) == Vector3.zero)
         {
@@ -63,7 +84,8 @@ public class Villager : MonoBehaviour
             yield return null;
         }
         listHasWorked.Add(this);
-        StartCoroutine(job.DoTheWork());
+        yield return job.DoTheWork();
+        _isWorking = false;
     }
 
     public void GoToSleep()

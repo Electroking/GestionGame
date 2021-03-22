@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 825229268197775676}
   - component: {fileID: 2748163563786581104}
+  - component: {fileID: -905783585088936580}
   m_Layer: 0
   m_Name: Villager
   m_TagString: Villager
@@ -46,6 +47,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   age: 0
   isExhausted: 0
+--- !u!195 &-905783585088936580
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4943250147121740437}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 6
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &8728049425887482452
 GameObject:
   m_ObjectHideFlags: 0
