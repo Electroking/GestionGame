@@ -74,13 +74,13 @@ public class GameManager : MonoBehaviour
 
         // TESTING
         mapBounds = new Bounds(Vector3.zero, terrainSize * 2);
-        Wood = 10;
-        Stone = 10;
     }
 
     void Start()
     {
         StartGame();
+        Wood = 10;
+        Stone = 10;
     }
 
     void Update()
@@ -101,7 +101,8 @@ public class GameManager : MonoBehaviour
 
         // +++ SPAWN VILLAGERS +++ //
         string villagerJobs = "";
-        for (int i = 0; i < startVillagerCount; i++) {
+        for (int i = 0; i < startVillagerCount; i++)
+        {
             Vector3 position = Quaternion.Euler(0, i * 360 / startVillagerCount, 0) * new Vector3(spawnRadius, 0, 0);
             Villager villager = PoolManager.instance.SpawnVillager(position);
             villager.AssignJob((Job.Type)i, true);
@@ -194,7 +195,8 @@ public class GameManager : MonoBehaviour
     }
 
     public Vector3 GetTerrainPos(Vector3 position) => GetTerrainPos(position, Vector3.zero);
-    public Vector3 GetTerrainPos(Vector3 position, Vector3 objectSize) {
+    public Vector3 GetTerrainPos(Vector3 position, Vector3 objectSize)
+    {
         Vector3 terrainPos = GetBoundedPos(position, objectSize);
         terrainPos.y = GetTerrainHeight(terrainPos);
         return terrainPos;
@@ -220,7 +222,7 @@ public class GameManager : MonoBehaviour
     {
         Vector3 rayOrigin = position;
         rayOrigin.y = 100;
-        if (Physics.Raycast(rayOrigin, -Vector3.up, out RaycastHit hit, 250, 1<<LayerMask.NameToLayer(Utils.LAYER_TERRAIN)))
+        if (Physics.Raycast(rayOrigin, -Vector3.up, out RaycastHit hit, 250, 1 << LayerMask.NameToLayer(Utils.LAYER_TERRAIN)))
         {
             return hit.point.y;
         }

@@ -46,7 +46,7 @@ public class UIManager : MonoBehaviour
         {
             if (GetTerrainPointHovered(out Vector3 terrainPoint, true))
             {
-                
+
                 MoveSelectedBuilding(terrainPoint);
                 if (leftClick)
                 {
@@ -107,10 +107,9 @@ public class UIManager : MonoBehaviour
 
     public void UpdateUI()
     {
-        /*/ change which building is selected, which are available, etc
         foodText.text = "Food : " + gm.Food;
         woodText.text = "Wood : " + gm.Wood;
-        stoneText.text = "Stone : " + gm.Stone;*/
+        stoneText.text = "Stone : " + gm.Stone;
     }
     void PlaceSelectedBuilding()
     {
@@ -133,9 +132,9 @@ public class UIManager : MonoBehaviour
     }
     public void SpawnPopUpInfo(int numType)
     {
-        if( popUpPanel == null)
+        if (popUpPanel == null)
         {
-            popUpPanel = Instantiate(prefabPopUp,_canvas.transform);
+            popUpPanel = Instantiate(prefabPopUp, _canvas.transform);
         }
         else
         {
