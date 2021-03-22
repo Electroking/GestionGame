@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class PlayerCamera : MonoBehaviour
 {
-    float lastMousePosX;
-    [SerializeField] float speed = 10f, rotateSpeed = 10f, zMinZoom = -20, zMaxZoom = -80;
+    float lastMousePosX, lastRotateY = 0f;
+    [SerializeField] float speed = 10f, rotateSpeed = 1f, zMinZoom = -20, zMaxZoom = -80;
     bool lmpIsUsed = false, zoomIsUsed = false, rotateIsUsed = false, translateIsUsed = false;
     // Start is called before the first frame update
     void Start()
@@ -18,10 +18,6 @@ public class PlayerCamera : MonoBehaviour
     void Update()
     {
         MoveCam();
-        if(!lmpIsUsed)
-        {
-            lastMousePosX = Input.mousePosition.x;
-        }
     }
     void MoveCam()
     {
@@ -62,12 +58,20 @@ public class PlayerCamera : MonoBehaviour
     void RotationMoveCam()
     {
         lmpIsUsed = false;
-        rotateIsUsed = false;
-        if (Input.GetMouseButton(1) && !zoomIsUsed && !translateIsUsed)
+        if (Input.GetMouseButtonDown(1))
+        {
+            lastMousePosX = Input.mousePosition.x;
+            rotateIsUsed = true;
+        }
+        if (Input.GetMouseButton(1) && !translateIsUsed)
         {
             lmpIsUsed = true;
-            rotateIsUsed = true;
-            transform.Rotate(Vector3.up * Time.deltaTime * rotateSpeed * Mathf.Sign(Input.mousePosition.x - lastMousePosX));
+            transform.rotation = Quaternion.Euler(Vector3.up * 0.01f * rotateSpeed * (Input.mousePosition.x - lastMousePosX + lastRotateY));
+        }
+        if(Input.GetMouseButtonUp(1))
+        {
+            rotateIsUsed = false;
+            lastRotateY += Input.mousePosition.x - lastMousePosX;
         }
     }
     void ZoomCam()

@@ -156,6 +156,7 @@ MonoBehaviour:
   mapBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
+  terrain: {fileID: 0}
 --- !u!4 &109169384
 Transform:
   m_ObjectHideFlags: 0
@@ -1342,7 +1343,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 50
-  rotateSpeed: 100
+  rotateSpeed: 10
   zMinZoom: -20
   zMaxZoom: -80
 --- !u!1 &627090321
