@@ -4,9 +4,15 @@ using UnityEngine;
 
 public class House : Building
 {
+    public static List<House> list = new List<House>();
     public Villager inhabitant;
 
     protected override void Update()
     {
+    }
+    protected override void OnBuilt()
+    {
+        base.OnBuilt();
+        House.list.Add(this);
     }
 }

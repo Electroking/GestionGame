@@ -3589,8 +3589,7 @@ MonoBehaviour:
   foodText: {fileID: 1945971093}
   woodText: {fileID: 991683058}
   stoneText: {fileID: 1602892534}
-  prefabPopUp: {fileID: -5684962805575942999, guid: 84e84584aff605a4291f762910eeed73,
-    type: 3}
+  popUpPanel: []
 --- !u!4 &1708944877
 Transform:
   m_ObjectHideFlags: 0
@@ -4148,6 +4147,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0b646d87155ca741a6e51a47d5e8929, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timeOfDay: 0
+  dayLength: 13
+  nightLength: 1
   terrainSize: {x: 40, y: 0, z: 40}
   startVillagerCount: 5
   spawnRadius: 2
