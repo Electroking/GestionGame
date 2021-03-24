@@ -4,5 +4,10 @@ using UnityEngine;
 
 public class Farm : Building
 {
-    public static int nbFarms;
+    public static List<Farm> farmsList = new List<Farm>();
+
+    protected override void Built()
+    {
+        farmsList.Add(this);
+    }
 }

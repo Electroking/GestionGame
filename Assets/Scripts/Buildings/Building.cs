@@ -71,11 +71,9 @@ public abstract class Building : MonoBehaviour
         {
             OnBuilt();
         }
-        //StartCoroutine(nameof(Construct), 6f);
-    }
+        }
 
-
-    private void ExpendResources()
+        private void ExpendResources()
     {
         GameManager.instance.Stone -= resourceS;
         GameManager.instance.Wood -= resourceW;
@@ -98,19 +96,22 @@ public abstract class Building : MonoBehaviour
 
         }
         // at this point, the building has been built
-        transform.localScale *= 2.5f;
         Debug.Log("Construct");
         OnBuilt();
     }
 
-    protected virtual void OnBuilt()
+    protected void OnBuilt()
     {
         isBuilt = true;
         unbuiltList.Remove(this);
         Debug.Log(name + " has been built!");
+        Built();
+    }
+    protected virtual void Built()
+    {
     }
 
-    void ChangeAlpha(float newAlpha)
+        void ChangeAlpha(float newAlpha)
     {
         if (newAlpha == colorAlpha) { return; }
         Color matColor;
@@ -138,22 +139,6 @@ public abstract class Building : MonoBehaviour
             }
         }
         return canbePlaced = true;
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.tag == "Village")
-        {
-            //canbeBuilt = true;
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.tag == "Village")
-        {
-            //canbeBuilt = false;
-        }
     }
 }
 
