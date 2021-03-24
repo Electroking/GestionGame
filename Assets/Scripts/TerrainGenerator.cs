@@ -26,21 +26,24 @@ public class TerrainGenerator : MonoBehaviour {
         }*/
     }
 
-    public void GenerateTerrain(bool pseudoRandom = false) {
+    public Bounds GenerateTerrain(bool pseudoRandom = false) {
         // generate base terrain
         TerrainData tData = _terrain.terrainData;
         if (pseudoRandom) {
             tData.heightmapResolution = terrainSize + 1;
             tData.size = new Vector3(terrainSize, terrainHeight, terrainSize);
             tData.SetHeights(0, 0, GenerateHeights());
-        } else {
-            terrainSize = (int)tData.size.x;
         }
         _collider.terrainData = tData;
-        transform.position = new Vector3(-tData.size.x * 0.5f, 0, -tData.size.z * 0.5f);
-        // generate trees ?
+        Vector3 center = new Vector3(tData.size.x * 0.5f, 0, tData.size.z * 0.5f);
+        // generate trees
+        if (!pseudoRandom) {
+
+        }
 
         UpdateNavMesh();
+
+        return new Bounds(center, new Vector3(tData.size.x, 0, tData.size.z));
     }
 
     float[,] GenerateHeights() {

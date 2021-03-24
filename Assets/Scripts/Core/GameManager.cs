@@ -103,14 +103,13 @@ public class GameManager : MonoBehaviour
         timeOfDay = 0;
         // +++ GENERATE TERRAIN +++ //
         terrain = FindObjectOfType<TerrainGenerator>();
-        terrain.GenerateTerrain();
-        mapBounds = new Bounds(Vector3.zero, new Vector3(terrain.terrainSize * 2, 0, terrain.terrainSize * 2));
+        mapBounds = terrain.GenerateTerrain();
 
         // +++ SPAWN VILLAGERS +++ //
         string villagerJobs = "";
         for (int i = 0; i < startVillagerCount; i++)
         {
-            Vector3 position = Quaternion.Euler(0, i * 360 / startVillagerCount, 0) * new Vector3(spawnRadius, 0, 0);
+            Vector3 position = mapBounds.center + Quaternion.Euler(0, i * 360 / startVillagerCount, 0) * new Vector3(spawnRadius, 0, 0);
             Villager villager = PoolManager.instance.SpawnVillager(position);
             villager.AssignJob((Job.Type)i, true);
 
@@ -149,7 +148,12 @@ public class GameManager : MonoBehaviour
 
     void StartDay()
     {
+        // start day code
 
+
+        // at the end
+        timeOfDay = 0;
+        isDayEnding = false;
     }
 
     IEnumerator EndDay()
