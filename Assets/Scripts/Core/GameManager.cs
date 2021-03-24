@@ -11,9 +11,11 @@ public class GameManager : MonoBehaviour
     public float Prosperity
     {
         get { return _prosperity; }
-        set { _prosperity = value; }
+        set { _prosperity = Mathf.Clamp(value, 0, maxProsperity);
+        }
     }
-    public float _prosperity, maxProsperity;
+    float _prosperity;
+    public float maxProsperity = 100f;
     public int Wood
     {
         get
@@ -83,6 +85,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        Debug.Log(GameManager.instance.maxProsperity);
         /*if (Input.GetMouseButtonDown(0))
         {
             Villager villager = PoolManager.instance.UnpoolVillager();

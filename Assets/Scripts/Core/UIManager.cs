@@ -14,7 +14,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] PopUpInfo[] popUpPanel;
     [SerializeField] Slider sliderTime;
     [SerializeField] Slider prospSlider;
-    [SerializeField] float dayLenght, timeOfDay, prosp, maxProsp;
+    float dayLenght, timeOfDay, prosp, maxProsp;
     int i = 0;
 
     private void Awake()
@@ -62,7 +62,6 @@ public class UIManager : MonoBehaviour
     }
     void LateUpdate()
     {
-        Mathf.Clamp(GameManager.instance.Prosperity, 0, GameManager.instance.maxProsperity);
         UpdateUI();
         UpdateSliderOfTime();
         UpdateSliderOfProsp();
@@ -181,12 +180,12 @@ public class UIManager : MonoBehaviour
     {
         prosp = GameManager.instance.Prosperity;
         maxProsp = GameManager.instance.maxProsperity;
-        sliderTime.maxValue = 1;
-        sliderTime.value = prosp / maxProsp ;
+        prospSlider.maxValue = 1;
+        prospSlider.value = prosp / maxProsp ;
     }
     void UpdateSliderOfProsp()
     {
         prosp = GameManager.instance.Prosperity;
-        sliderTime.value = prosp / maxProsp;
+        prospSlider.value = prosp / maxProsp;
     }
 }

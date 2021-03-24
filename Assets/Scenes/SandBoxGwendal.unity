@@ -224,8 +224,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0b646d87155ca741a6e51a47d5e8929, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _prosperity: 0
-  maxProsperity: 0
+  maxProsperity: 100
   timeOfDay: 0
   dayLength: 20
   nightLength: 1
@@ -3764,7 +3763,7 @@ MonoBehaviour:
   - {fileID: 1754762217}
   sliderTime: {fileID: 112189246}
   prospSlider: {fileID: 1805092346}
-  dayLenght: 0
+  dayLenght: 20
   timeOfDay: 0
   prosp: 0
   maxProsp: 0
