@@ -11,8 +11,9 @@ public class UIManager : MonoBehaviour
     Building _selectedBuilding = null;
     [SerializeField] Text foodText = null, woodText = null, stoneText = null;
     GameManager gm;
-    [SerializeField] PopUpInfo prefabPopUp = null;
-    PopUpInfo popUpPanel;
+    [SerializeField] PopUpInfo[] popUpPanel;
+    float plusPos = 0;
+    int i = 0;
 
     private void Awake()
     {
@@ -132,19 +133,29 @@ public class UIManager : MonoBehaviour
     }
     public void SpawnPopUpInfo(int numType)
     {
-        if (popUpPanel == null)
+        switch(numType)
         {
-            popUpPanel = Instantiate(prefabPopUp, _canvas.transform);
+            case 0:
+                i = 0; //House
+                break;
+            case 1:
+                i = 1; //School
+                break;
+            case 2:
+                i = 2; //farm
+                break;
+            case 3:
+                i = 3; //Museum
+                break;
+            case 4:
+                i = 4; //Library
+                break;
         }
-        else
-        {
-            popUpPanel.gameObject.SetActive(true);
-        }
-        popUpPanel.transform.position = Input.mousePosition;
-        popUpPanel.SetText();
+        popUpPanel[i].gameObject.SetActive(true);
+        popUpPanel[i].SetText(i);
     }
     public void ClosePopUpInfo()
     {
-        popUpPanel.gameObject.SetActive(false);
+        popUpPanel[i].gameObject.SetActive(false);
     }
 }
