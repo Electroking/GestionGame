@@ -13,7 +13,8 @@ public class UIManager : MonoBehaviour
     GameManager gm;
     [SerializeField] PopUpInfo[] popUpPanel;
     [SerializeField] Slider sliderTime;
-    [SerializeField] float dayLenght, timeOfDay;
+    [SerializeField] Slider prospSlider;
+    [SerializeField] float dayLenght, timeOfDay, prosp, maxProsp;
     int i = 0;
 
     private void Awake()
@@ -34,7 +35,8 @@ public class UIManager : MonoBehaviour
     {
         gm = GameManager.instance;
         UpdateUI();
-        InitSlider();
+        InitSliderOfTime();
+        InitSliderOfProsp();
     }
     private void Update()
     {
@@ -60,8 +62,10 @@ public class UIManager : MonoBehaviour
     }
     void LateUpdate()
     {
+        Mathf.Clamp(GameManager.instance.Prosperity, 0, GameManager.instance.maxProsperity);
         UpdateUI();
-        UpdateSlider();
+        UpdateSliderOfTime();
+        UpdateSliderOfProsp();
     }
 
     public void SelectBuilding(int buildingType)
@@ -161,16 +165,28 @@ public class UIManager : MonoBehaviour
     {
         popUpPanel[i].gameObject.SetActive(false);
     }
-    void InitSlider()
+    void InitSliderOfTime()
     {
         dayLenght = GameManager.instance.dayLength;
         timeOfDay = GameManager.instance.timeOfDay;
         sliderTime.maxValue = 1;
         sliderTime.value = timeOfDay;
     }
-    void UpdateSlider()
+    void UpdateSliderOfTime()
     {
         timeOfDay = GameManager.instance.timeOfDay;
         sliderTime.value = timeOfDay/dayLenght;
+    }
+    void InitSliderOfProsp()
+    {
+        prosp = GameManager.instance.Prosperity;
+        maxProsp = GameManager.instance.maxProsperity;
+        sliderTime.maxValue = 1;
+        sliderTime.value = prosp / maxProsp ;
+    }
+    void UpdateSliderOfProsp()
+    {
+        prosp = GameManager.instance.Prosperity;
+        sliderTime.value = prosp / maxProsp;
     }
 }

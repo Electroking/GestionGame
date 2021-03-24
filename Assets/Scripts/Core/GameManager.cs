@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
         get { return _prosperity; }
         set { _prosperity = value; }
     }
-    float _prosperity;
+    public float _prosperity, maxProsperity;
     public int Wood
     {
         get
