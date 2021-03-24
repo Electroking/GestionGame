@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    //statics
+    public static GameManager instance = null;
+
     //properties
     public float Prosperity
     {
@@ -52,16 +55,15 @@ public class GameManager : MonoBehaviour
     int _food;
 
     //privates
-    float timeOfDay;
-    Queue<Building> buildQueue;
+    [SerializeField] float timeOfDay, dayLength = 20, nightLength = 1;
     [SerializeField] Vector3 terrainSize = Vector3.one;
     [SerializeField] int startVillagerCount = 5;
     [SerializeField] float spawnRadius = 1;
-    public Bounds mapBounds;
-    public TerrainGenerator terrain;
+    bool isDayEnding = false;
 
     //publics
-    public static GameManager instance = null;
+    public Bounds mapBounds;
+    public TerrainGenerator terrain;
 
     void Awake()
     {
@@ -88,10 +90,18 @@ public class GameManager : MonoBehaviour
             villager.transform.position = Vector3.zero;
             villager.AssignJob((Job.Type)Random.Range(0, 4), true);
         }*/
+
+        timeOfDay += Time.deltaTime;
+        if (!isDayEnding && timeOfDay >= dayLength)
+        {
+            isDayEnding = true;
+            StartCoroutine(EndDay());
+        }
     }
 
     void StartGame()
     {
+        timeOfDay = 0;
         // +++ GENERATE TERRAIN +++ //
         terrain = FindObjectOfType<TerrainGenerator>();
         terrain.GenerateTerrain();
@@ -111,8 +121,6 @@ public class GameManager : MonoBehaviour
         GetAllMines();
         GetAllTrees();
         GetAllBushes();
-
-        //StartDay();
     }
     void GetAllMines()
     {
@@ -144,14 +152,14 @@ public class GameManager : MonoBehaviour
 
     }
 
-    void EndDay()
+    IEnumerator EndDay()
     {
         int foodDeficit = Villager.list.Count - Food;
         if (foodDeficit > 0)
         {
             for (int i = 0; i < foodDeficit; i++)
             {
-                Villager.list[Random.Range(0, Villager.list.Count - 1 - i)].Die();
+                Villager.list[Random.Range(0, Villager.list.Count)].Die();
             }
         }
 
@@ -161,24 +169,20 @@ public class GameManager : MonoBehaviour
             Villager.listHasWorked[i].isExhausted = true;
         }
 
-        bool gotEnoughHouses = House.nbHouses >= Villager.listHasWorked.Count;
-        if (gotEnoughHouses)
+        Villager.nbSleeping = Villager.nbShouldSleep = 0;
+        for (int i = 0; i < House.list.Count && Villager.listHasWorked.Count > 0; i++)
         {
-            for (int i = 0; i < listCount; i++)
-            {
-                Villager.listHasWorked[i].GoToSleep();
-            }
+            Villager boba = Villager.listHasWorked[Random.Range(0, Villager.listHasWorked.Count)];
+            StartCoroutine(boba.GoToSleep(House.list[i]));
+            Villager.listHasWorked.Remove(boba);
+            Villager.nbShouldSleep++;
         }
-        else
-        {
-            for (int i = 0; i < House.nbHouses; i++)
-            {
-                Villager.listHasWorked[Random.Range(0, Villager.listHasWorked.Count - 1 - i)].GoToSleep();
-            }
-        }
+        yield return new WaitUntil(() => Villager.nbSleeping >= Villager.nbShouldSleep);
+        yield return new WaitForSeconds(nightLength);
+        StartDay();
     }
 
-    void ChangeGameSpeed(int timeScale)
+    public void ChangeGameSpeed(int timeScale)
     {
         Time.timeScale = timeScale;
     }

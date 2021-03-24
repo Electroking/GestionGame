@@ -7,6 +7,7 @@ public class Villager : MonoBehaviour
 {
     public static List<Villager> list = new List<Villager>();
     public static List<Villager> listHasWorked = new List<Villager>();
+    public static int nbShouldSleep, nbSleeping;
     public int age;
     public bool isExhausted = false;
     public Job job;
@@ -117,22 +118,18 @@ public class Villager : MonoBehaviour
         }
     }
 
-    public void GoToSleep()
+    public IEnumerator GoToSleep(House house)
     {
-        House newHouse = FindObjectOfType<House>();
-        if (newHouse.inhabitant == null)
+        while (!Move(house.transform.position))
         {
-            if (transform.position != newHouse.transform.position)
-            {
-                Move(newHouse.transform.position);
-                gameObject.SetActive(false);
-                isExhausted = false;
-            }
-            else newHouse.inhabitant = this;
+            yield return null;
         }
+        nbSleeping++;
     }
     public void Die()
     {
+        list.Remove(this);
+        listHasWorked.Remove(this);
         Destroy(gameObject);
     }
 }

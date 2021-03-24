@@ -5,7 +5,6 @@ using UnityEngine;
 
 public abstract class Building : MonoBehaviour
 {
-    public static int nbHouses;
     public static List<Building> unbuiltList = new List<Building>();
 
     public new Collider collider;
@@ -68,7 +67,8 @@ public abstract class Building : MonoBehaviour
         if (isBuilt) { return; }
         _progression = Mathf.Clamp01(_progression + amount);
         transform.localScale = Vector3.one * 0.5f * (_progression + 1);
-        if (_progression >= 1) {
+        if (_progression >= 1)
+        {
             OnBuilt();
         }
         //StartCoroutine(nameof(Construct), 6f);
@@ -89,13 +89,13 @@ public abstract class Building : MonoBehaviour
 
     IEnumerator Construct(float nbSeconds)
     {
-        
+
         float seconds = 0;
         while (seconds < nbSeconds)
         {
             seconds += Time.deltaTime;
             yield return null;
-            
+
         }
         // at this point, the building has been built
         transform.localScale *= 2.5f;
