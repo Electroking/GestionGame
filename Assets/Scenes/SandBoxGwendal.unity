@@ -224,6 +224,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0b646d87155ca741a6e51a47d5e8929, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timeOfDay: 0
+  dayLength: 20
+  nightLength: 1
   terrainSize: {x: 40, y: 0, z: 40}
   startVillagerCount: 5
   spawnRadius: 2
@@ -256,7 +259,7 @@ GameObject:
   - component: {fileID: 112189245}
   - component: {fileID: 112189246}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: "Prosp\xE9rit\xE9"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -281,7 +284,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 200, y: -20}
+  m_AnchoredPosition: {x: 50, y: -20}
   m_SizeDelta: {x: 200, y: 20}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &112189246
@@ -3118,8 +3121,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: -400, y: 0}
-  m_SizeDelta: {x: 400, y: 50}
+  m_AnchoredPosition: {x: -200, y: 0}
+  m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1592457387
 MonoBehaviour:
@@ -3153,7 +3156,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "Jauge de prosp\xE9rit\xE9 : "
+  m_Text: "Prosp\xE9rit\xE9 : "
 --- !u!222 &1592457388
 CanvasRenderer:
   m_ObjectHideFlags: 0
