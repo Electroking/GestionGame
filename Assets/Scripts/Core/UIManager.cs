@@ -12,7 +12,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] Text foodText = null, woodText = null, stoneText = null;
     GameManager gm;
     [SerializeField] PopUpInfo[] popUpPanel;
-    float plusPos = 0;
+    [SerializeField] Slider sliderTime;
+    [SerializeField] float dayLenght, timeOfDay;
     int i = 0;
 
     private void Awake()
@@ -33,6 +34,7 @@ public class UIManager : MonoBehaviour
     {
         gm = GameManager.instance;
         UpdateUI();
+        InitSlider();
     }
     private void Update()
     {
@@ -59,6 +61,7 @@ public class UIManager : MonoBehaviour
     void LateUpdate()
     {
         UpdateUI();
+        UpdateSlider();
     }
 
     public void SelectBuilding(int buildingType)
@@ -157,5 +160,17 @@ public class UIManager : MonoBehaviour
     public void ClosePopUpInfo()
     {
         popUpPanel[i].gameObject.SetActive(false);
+    }
+    void InitSlider()
+    {
+        dayLenght = GameManager.instance.dayLength;
+        timeOfDay = GameManager.instance.timeOfDay;
+        sliderTime.maxValue = 1;
+        sliderTime.value = timeOfDay;
+    }
+    void UpdateSlider()
+    {
+        timeOfDay = GameManager.instance.timeOfDay;
+        sliderTime.value = timeOfDay/dayLenght;
     }
 }

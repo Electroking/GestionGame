@@ -55,7 +55,7 @@ public class GameManager : MonoBehaviour
     int _food;
 
     //privates
-    [SerializeField] float timeOfDay, dayLength = 20, nightLength = 1;
+    public float timeOfDay, dayLength = 20, nightLength = 1;
     //[SerializeField] Vector3 terrainSize = Vector3.one;
     [SerializeField] int startVillagerCount = 5;
     [SerializeField] float spawnRadius = 1;
@@ -149,8 +149,13 @@ public class GameManager : MonoBehaviour
     void StartDay()
     {
         // start day code
-
-
+        int listCount = Villager.listHasWorked.Count;
+        for (int i = 0; i < listCount; i++)
+        {
+            Villager jango = Villager.listHasSleep[i];
+            jango.isExhausted = false;
+            Villager.listHasSleep.Remove(jango);
+        }
         // at the end
         timeOfDay = 0;
         isDayEnding = false;
@@ -179,6 +184,7 @@ public class GameManager : MonoBehaviour
             Villager boba = Villager.listHasWorked[Random.Range(0, Villager.listHasWorked.Count)];
             StartCoroutine(boba.GoToSleep(House.list[i]));
             Villager.listHasWorked.Remove(boba);
+            Villager.listHasSleep.Add(boba);
             Villager.nbShouldSleep++;
         }
         yield return new WaitUntil(() => Villager.nbSleeping >= Villager.nbShouldSleep);

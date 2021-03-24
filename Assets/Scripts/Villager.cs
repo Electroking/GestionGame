@@ -6,7 +6,7 @@ using UnityEngine.AI;
 public class Villager : MonoBehaviour
 {
     public static List<Villager> list = new List<Villager>();
-    public static List<Villager> listHasWorked = new List<Villager>();
+    public static List<Villager> listHasWorked = new List<Villager>(), listHasSleep = new List<Villager>();
     public static int nbShouldSleep, nbSleeping;
     public int age;
     public bool isExhausted = false;
