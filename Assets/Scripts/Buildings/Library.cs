@@ -13,7 +13,7 @@ public class Library : Building
     }
     IEnumerator UpProsperity()
     {
-        while (GameManager.instance.Prosperity < 100)
+        while (GameManager.instance.Prosperity < GameManager.instance.maxProsperity)
         {
             yield return new WaitForSeconds(20);
             GameManager.instance.Prosperity += 1;
