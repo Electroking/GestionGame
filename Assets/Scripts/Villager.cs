@@ -63,11 +63,13 @@ public class Villager : MonoBehaviour
             Debug.Log($"validDestination: {validDestination}");
             _isMoving = true;
         }
-        if (transform.position.x == targetPos.x && transform.position.z == targetPos.z)
-        {
-            Debug.Log("==> Arrived at destination.");
-            _isMoving = false;
-            return true;
+        //if (transform.position.x == targetPos.x && transform.position.z == targetPos.z)
+        if (Vector3.Distance(_agent.destination, transform.position) <= _agent.stoppingDistance) {
+            if(!_agent.hasPath || _agent.velocity.sqrMagnitude == 0f) {
+                Debug.Log("==> Arrived at destination.");
+                _isMoving = false;
+                return true;
+            }
         }
         return false;
         /*

@@ -36,6 +36,8 @@ public class Lumberjack : Job
                 treeDic[treeArray[i]] = villager;
                 Vector3 relative = treeArray[i].transform.position - villager.transform.position;
                 workplace = relative - relative.normalized * treeRadius * treeArray[i].transform.localScale.x + villager.transform.position;
+                // testing 
+                workplace = treeArray[i].transform.position;
                 return true;
             }
         }

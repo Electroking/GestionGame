@@ -4,8 +4,12 @@ using UnityEngine;
 using UnityEngine.AI;
 
 public class TerrainGenerator : MonoBehaviour {
+    public Vector3[] TreePositions { get; private set; }
+    public Vector3[] RockPositions { get; private set; }
+    public Vector3[] BushPositions { get; private set; }
+
     [SerializeField] bool regenerateMap = true;
-    public  int terrainSize = 256;
+    [SerializeField] int terrainSize = 256;
     [SerializeField] int terrainHeight = 10;
     [SerializeField] float scale = 1;
     [SerializeField] Vector2 offset = Vector2.zero;
@@ -36,10 +40,29 @@ public class TerrainGenerator : MonoBehaviour {
         }
         _collider.terrainData = tData;
         Vector3 center = new Vector3(tData.size.x * 0.5f, 0, tData.size.z * 0.5f);
-        // generate trees
-        if (!pseudoRandom) {
 
+        // get trees, rocks, and bushes
+        List<Vector3> trees = new List<Vector3>();
+        List<Vector3> rocks = new List<Vector3>();
+        List<Vector3> bushes = new List<Vector3>();
+        for (int i=0; i<tData.treeInstances.Length; i++) {
+            switch (tData.treeInstances[i].prototypeIndex) {
+                case 0:
+                    trees.Add(tData.treeInstances[i].position);
+                    break;
+                case 1:
+                    rocks.Add(tData.treeInstances[i].position);
+                    break;
+                case 2:
+                    bushes.Add(tData.treeInstances[i].position);
+                    break;
+                default:
+                    break;
+            }
         }
+        TreePositions = trees.ToArray();
+        RockPositions = rocks.ToArray();
+        BushPositions = bushes.ToArray();
 
         UpdateNavMesh();
 

@@ -104,6 +104,9 @@ public class GameManager : MonoBehaviour
         // +++ GENERATE TERRAIN +++ //
         terrain = FindObjectOfType<TerrainGenerator>();
         mapBounds = terrain.GenerateTerrain();
+        GetAllMines();
+        GetAllTrees();
+        GetAllBushes();
 
         // +++ SPAWN VILLAGERS +++ //
         string villagerJobs = "";
@@ -117,9 +120,6 @@ public class GameManager : MonoBehaviour
         }
         Debug.Log(villagerJobs);
 
-        GetAllMines();
-        GetAllTrees();
-        GetAllBushes();
     }
     void GetAllMines()
     {
