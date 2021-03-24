@@ -5,4 +5,19 @@ using UnityEngine;
 public class Library : Building
 {
     public static int nbLibraries;
+
+    protected override void Built()
+    {
+        nbLibraries += 1;
+        StartCoroutine("UpProsperity");
+    }
+    IEnumerator UpProsperity()
+    {
+        while (GameManager.instance.Prosperity < 100)
+        {
+            yield return new WaitForSeconds(20);
+            GameManager.instance.Prosperity += 1;
+            Debug.Log("Prosperity " + GameManager.instance.Prosperity);
+        }
+    }
 }

@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class TerrainGenerator : MonoBehaviour {
     [SerializeField] bool regenerateMap = true;
-    [SerializeField] int terrainSize = 256;
+    public  int terrainSize = 256;
     [SerializeField] int terrainHeight = 10;
     [SerializeField] float scale = 1;
     [SerializeField] Vector2 offset = Vector2.zero;
@@ -26,13 +26,20 @@ public class TerrainGenerator : MonoBehaviour {
         }*/
     }
 
-    public void GenerateTerrain() {
-        transform.position = new Vector3(-terrainSize * 0.5f, 0, -terrainSize * 0.5f);
+    public void GenerateTerrain(bool pseudoRandom = false) {
+        // generate base terrain
         TerrainData tData = _terrain.terrainData;
-        tData.heightmapResolution = terrainSize + 1;
-        tData.size = new Vector3(terrainSize, terrainHeight, terrainSize);
-        tData.SetHeights(0, 0, GenerateHeights());
+        if (pseudoRandom) {
+            tData.heightmapResolution = terrainSize + 1;
+            tData.size = new Vector3(terrainSize, terrainHeight, terrainSize);
+            tData.SetHeights(0, 0, GenerateHeights());
+        } else {
+            terrainSize = (int)tData.size.x;
+        }
         _collider.terrainData = tData;
+        transform.position = new Vector3(-tData.size.x * 0.5f, 0, -tData.size.z * 0.5f);
+        // generate trees ?
+
         UpdateNavMesh();
     }
 

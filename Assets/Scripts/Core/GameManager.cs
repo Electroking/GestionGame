@@ -56,14 +56,14 @@ public class GameManager : MonoBehaviour
 
     //privates
     [SerializeField] float timeOfDay, dayLength = 20, nightLength = 1;
-    [SerializeField] Vector3 terrainSize = Vector3.one;
+    //[SerializeField] Vector3 terrainSize = Vector3.one;
     [SerializeField] int startVillagerCount = 5;
     [SerializeField] float spawnRadius = 1;
     bool isDayEnding = false;
 
     //publics
-    public Bounds mapBounds;
-    public TerrainGenerator terrain;
+    [HideInInspector] public Bounds mapBounds;
+    [HideInInspector] public TerrainGenerator terrain;
 
     void Awake()
     {
@@ -72,7 +72,6 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         // TESTING
-        mapBounds = new Bounds(Vector3.zero, terrainSize * 2);
     }
 
     void Start()
@@ -105,6 +104,7 @@ public class GameManager : MonoBehaviour
         // +++ GENERATE TERRAIN +++ //
         terrain = FindObjectOfType<TerrainGenerator>();
         terrain.GenerateTerrain();
+        mapBounds = new Bounds(Vector3.zero, new Vector3(terrain.terrainSize * 2, 0, terrain.terrainSize * 2));
 
         // +++ SPAWN VILLAGERS +++ //
         string villagerJobs = "";
