@@ -7,10 +7,10 @@ public class Museum : Building
     public static int nbMuseums;
     public float nbprosperity;
 
-    protected override void Built()
+    protected override void OnBuilt()
     {
         nbMuseums += 1;
-        StartCoroutine("UpProsperity");
+        StartCoroutine(nameof(UpProsperity));
     }
     IEnumerator UpProsperity()
     {

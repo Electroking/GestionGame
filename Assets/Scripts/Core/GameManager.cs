@@ -85,7 +85,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(GameManager.instance.maxProsperity);
+        //Debug.Log(GameManager.instance.maxProsperity);
         /*if (Input.GetMouseButtonDown(0))
         {
             Villager villager = PoolManager.instance.UnpoolVillager();
@@ -107,9 +107,10 @@ public class GameManager : MonoBehaviour
         // +++ GENERATE TERRAIN +++ //
         terrain = FindObjectOfType<TerrainGenerator>();
         mapBounds = terrain.GenerateTerrain();
-        GetAllMines();
-        GetAllTrees();
-        GetAllBushes();
+        // bind environment objects to their respective job
+        Lumberjack.treeArray = terrain.TreePositions;
+        Miner.mineArray = terrain.RockPositions;
+        Gatherer.bushArray = terrain.BushPositions;
 
         // +++ SPAWN VILLAGERS +++ //
         string villagerJobs = "";
@@ -117,82 +118,111 @@ public class GameManager : MonoBehaviour
         {
             Vector3 position = mapBounds.center + Quaternion.Euler(0, i * 360 / startVillagerCount, 0) * new Vector3(spawnRadius, 0, 0);
             Villager villager = PoolManager.instance.SpawnVillager(position);
+            //Debug.Log(villager.transform.position);
             villager.AssignJob((Job.Type)i, true);
 
             villagerJobs += $"villager {i}: " + villager.job?.ToString() + "; ";
         }
-        Debug.Log(villagerJobs);
+        //Debug.Log(villagerJobs);
 
-    }
-    void GetAllMines()
-    {
-        Miner.mineArray = GameObject.FindGameObjectsWithTag("Mine");
-        for (int i = 0; i < Miner.mineArray.Length; i++)
-        {
-            Miner.mineDic.Add(Miner.mineArray[i], null);
-        }
-    }
-    void GetAllTrees()
-    {
-        Lumberjack.treeArray = GameObject.FindGameObjectsWithTag("Tree");
-        for (int i = 0; i < Lumberjack.treeArray.Length; i++)
-        {
-            Lumberjack.treeDic.Add(Lumberjack.treeArray[i], null);
-        }
-    }
-    void GetAllBushes()
-    {
-        Gatherer.bushArray = GameObject.FindGameObjectsWithTag("Bush");
-        for (int i = 0; i < Gatherer.bushArray.Length; i++)
-        {
-            Gatherer.bushDic.Add(Gatherer.bushArray[i], null);
-        }
+        // +++ MISC +++ //
+        PlayerCamera pCam = FindObjectOfType<PlayerCamera>();
+        pCam.transform.position = mapBounds.center;
     }
 
     void StartDay()
     {
-        // start day code
-        int listCount = Villager.listHasWorked.Count;
-        for (int i = 0; i < listCount; i++)
-        {
-            Villager jango = Villager.listHasSleep[i];
-            jango.isExhausted = false;
-            Villager.listHasSleep.Remove(jango);
-        }
-        // at the end
-        timeOfDay = 0;
-        isDayEnding = false;
     }
 
     IEnumerator EndDay()
     {
-        int foodDeficit = Villager.list.Count - Food;
+        /*int foodDeficit = Villager.list.Count - Food;
         if (foodDeficit > 0)
         {
             for (int i = 0; i < foodDeficit; i++)
             {
                 Villager.list[Random.Range(0, Villager.list.Count)].Die();
             }
-        }
+        }*/
 
-        int listCount = Villager.listHasWorked.Count;
-        for (int i = 0; i < listCount; i++)
+        /*/ All villagers who have worked during the day are exhausted
+        for (int i = 0; i < Villager.listHasWorked.Count; i++)
         {
             Villager.listHasWorked[i].isExhausted = true;
         }
-
+        // All exhausted villagers go to sleep
         Villager.nbSleeping = Villager.nbShouldSleep = 0;
+        Villager.listHasSlept.Clear();
         for (int i = 0; i < House.list.Count && Villager.listHasWorked.Count > 0; i++)
         {
             Villager boba = Villager.listHasWorked[Random.Range(0, Villager.listHasWorked.Count)];
             StartCoroutine(boba.GoToSleep(House.list[i]));
             Villager.listHasWorked.Remove(boba);
-            Villager.listHasSleep.Add(boba);
+            Villager.listHasSlept.Add(boba);
             Villager.nbShouldSleep++;
         }
+        // wait for all exhausted villagers to reach a house (if possible)
         yield return new WaitUntil(() => Villager.nbSleeping >= Villager.nbShouldSleep);
         yield return new WaitForSeconds(nightLength);
-        StartDay();
+
+        // All villagers who slept arent exhausted anymore
+        for(int i = 0; i < Villager.listHasSlept.Count; i++) {
+            Villager jango = Villager.listHasSlept[i];
+            jango.isExhausted = false;
+            //Villager.listHasSlept.Remove(jango);
+        }
+        // at the end
+        timeOfDay = 0;
+        isDayEnding = false;*/
+
+
+        List<Villager> villagers = new List<Villager>(Villager.list);
+        villagers.Sort((v1, v2) => Random.Range(-1, 2));
+        for(int i = 0; i < villagers.Count; i++) {
+            if(Food > 0) {
+                Food--;
+            } else {
+                villagers[i].Die();
+            }
+        }
+        // Get the list of all villagers who have worked during the day and exhaust them
+        List<Villager> villagersWhoWorked = new List<Villager>();
+        List<Villager> villagersExhausted = new List<Villager>();
+        for(int i = 0; i < Villager.list.Count; i++) {
+            if(Villager.list[i].hasWorked) {
+                Villager.list[i].isExhausted = true;
+                villagersWhoWorked.Add(Villager.list[i]);
+            }
+            if(Villager.list[i].isExhausted) {
+                villagersExhausted.Add(Villager.list[i]);
+            }
+        }
+
+        // Exhausted villagers try to go to sleep (if enough Houses available)
+        villagersExhausted.Sort((v1, v2) => Random.Range(-1, 2)); // randomize villager order
+        Villager.listHasSlept.Clear();
+        List<Villager> villagersToBed = new List<Villager>();
+
+        //Debug.Log("nbHouses = " + House.list.Count + "; nbExhausted = " + villagersExhausted.Count);
+
+        for (int i = 0; i < villagersExhausted.Count && i < House.list.Count; i++) {
+            Villager boba = villagersExhausted[i];
+            villagersToBed.Add(boba);
+            StartCoroutine(boba.GoToSleep(House.list[i]));
+        }
+
+        // wait for all exhausted villagers to reach a house (if possible)
+        yield return new WaitUntil(() => Villager.listHasSlept.Count >= villagersToBed.Count);
+        yield return new WaitForSeconds(nightLength);
+        //Debug.Log("After the night !");
+        // All villagers who slept arent exhausted anymore
+        for(int i = 0; i < Villager.listHasSlept.Count; i++) {
+            Villager.listHasSlept[i].Hide(false);
+            Villager.listHasSlept[i].isExhausted = false;
+        }
+        // at the end
+        timeOfDay = 0;
+        isDayEnding = false;
     }
 
     public void ChangeGameSpeed(int timeScale)
