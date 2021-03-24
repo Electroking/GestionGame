@@ -7,24 +7,27 @@ public class Lumberjack : Job
 {
     public static Dictionary<GameObject, Villager> treeDic = new Dictionary<GameObject, Villager>();
     public static GameObject[] treeArray;
-    float treeRadius = 1;
+    float treeRadius = 1, timeToWork = 1, timer = 0;
 
     public Lumberjack() : base()
     {
     }
 
 
-    public override IEnumerator DoTheWork()
+    public override bool DoTheWork()
     {
-        while (!villager.isExhausted)
+        timer += Time.deltaTime;
+        if (timer >= timeToWork)
         {
-            yield return new WaitForSeconds(1);
             GameManager.instance.Wood += 1;
+            timer -= timeToWork;
         }
+        return false;
     }
 
-    public override Vector3 GetWorkplacePos()
+    public override bool GetWorkplacePos(out Vector3 workplace)
     {
+        workplace = Vector3.zero;
         treeArray = treeArray.OrderBy((d) => (d.transform.position - villager.transform.position).sqrMagnitude).ToArray();
         for (int i = 0; i < treeArray.Length; i++)
         {
@@ -32,9 +35,10 @@ public class Lumberjack : Job
             {
                 treeDic[treeArray[i]] = villager;
                 Vector3 relative = treeArray[i].transform.position - villager.transform.position;
-                return relative - relative.normalized * treeRadius * treeArray[i].transform.localScale.x + villager.transform.position;
+                workplace = relative - relative.normalized * treeRadius * treeArray[i].transform.localScale.x + villager.transform.position;
+                return true;
             }
         }
-        return Vector3.zero;
+        return false;
     }
 }

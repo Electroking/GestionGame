@@ -15,36 +15,43 @@ public class Builder : Job
 
     }
 
-    public override IEnumerator DoTheWork()
+    public override bool DoTheWork()
     {
-        while (!villager.isExhausted && !building.isBuilt) {
-            yield return null;
-            building.Build(workAmountPerSecond * Time.deltaTime);
-        }
-        if (!idleList.Contains(villager)) {
+        building.Build(workAmountPerSecond * Time.deltaTime);
+        if (building.isBuilt && !idleList.Contains(villager))
+        {
             idleList.Add(villager);
+            return true;
         }
+        return false;
+
         /*if (villager.isExhausted) { yield break; }
         if (building.isBuilt) {
             idleList.Add(villager);
         }*/
     }
 
-    public override Vector3 GetWorkplacePos()
+    public override bool GetWorkplacePos(out Vector3 workplace)
     {
+        workplace = Vector3.zero;
         Building[] unbuiltBuildings = Building.unbuiltList.ToArray();
-        for (int n=0; n<maxBuildersPerBuilding; n++) {
-            for(int i = 0; i < unbuiltBuildings.Length; i++) {
-                if(!unbuiltBuildings[i].isBuilt && unbuiltBuildings[i].builders.Count == n) {
-                    if (idleList.Contains(villager)) {
+        for (int n = 0; n < maxBuildersPerBuilding; n++)
+        {
+            for (int i = 0; i < unbuiltBuildings.Length; i++)
+            {
+                if (!unbuiltBuildings[i].isBuilt && unbuiltBuildings[i].builders.Count == n)
+                {
+                    if (idleList.Contains(villager))
+                    {
                         idleList.Remove(villager);
                     }
                     building = unbuiltBuildings[i];
                     building.builders.Add(villager);
-                    return building.transform.position; // TODO: get the closest possible position to the building
+                    workplace = building.transform.position; // TODO: get the closest possible position to the building
+                    return true;
                 }
             }
         }
-        return Vector3.zero;
+        return false;
     }
 }

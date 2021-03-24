@@ -12,7 +12,8 @@ public class Villager : MonoBehaviour
     public Job job;
 
     NavMeshAgent _agent;
-    bool _isWorking = false, _isMoving = false;
+    bool _isWorking = false, _isMoving = false, _isGoingToWork = false;
+    Vector3 _workplace;
 
     void Awake()
     {
@@ -23,14 +24,28 @@ public class Villager : MonoBehaviour
     void Start()
     {
         age = 0;
-        StartCoroutine(GoToWork());
     }
 
     void Update()
     {
-        if (!_isWorking && !isExhausted) {
-            StartCoroutine(GoToWork());
+        if (!isExhausted)
+        {
+            GoToWork();
         }
+    }
+
+    private void OnMouseDown()
+    {
+        if (Input.GetMouseButtonDown(1))
+        {
+            //jobMenu.SetActive(true);
+        }
+    }
+
+    public void JobSwitch(int jobType)
+    {
+        AssignJob(Job.Type.Student);
+        ((Student)job).jobToLearn = (Job.Type)jobType;
     }
 
     public void AssignJob(Job.Type jobType, bool trueJobsOnly = false)
@@ -41,12 +56,14 @@ public class Villager : MonoBehaviour
 
     public bool Move(Vector3 targetPos)
     {
-        if (!_isMoving) {
+        if (!_isMoving)
+        {
             bool validDestination = _agent.SetDestination(targetPos);
             Debug.Log($"validDestination: {validDestination}");
             _isMoving = true;
         }
-        if (transform.position.x == targetPos.x && transform.position.z == targetPos.z) {
+        if (transform.position.x == targetPos.x && transform.position.z == targetPos.z)
+        {
             Debug.Log("==> Arrived at destination.");
             _isMoving = false;
             return true;
@@ -69,23 +86,35 @@ public class Villager : MonoBehaviour
         return transform.position == targetPos;*/
     }
 
-    public IEnumerator GoToWork()
+    public void GoToWork()
     {
-        if (job == null) yield break;
-        _isWorking = true;
-        Vector3 workplace;
-        while ((workplace = job.GetWorkplacePos()) == Vector3.zero)
+        if (job == null) return;
+        if (!_isWorking)
         {
-            yield return null;
+            if (!_isGoingToWork)
+            {
+                if (job.GetWorkplacePos(out _workplace))
+                {
+                    _isGoingToWork = true;
+                }
+            }
+            else
+            {
+                if (Move(_workplace))
+                {
+                    _isGoingToWork = false;
+                    _isWorking = true;
+                    listHasWorked.Add(this);
+                }
+            }
         }
-        Debug.Log(workplace);
-        while (!Move(workplace))
+        else
         {
-            yield return null;
+            if (job.DoTheWork())
+            {
+                _isWorking = false;
+            }
         }
-        listHasWorked.Add(this);
-        yield return job.DoTheWork();
-        _isWorking = false;
     }
 
     public void GoToSleep()
@@ -99,6 +128,7 @@ public class Villager : MonoBehaviour
                 gameObject.SetActive(false);
                 isExhausted = false;
             }
+            else newHouse.inhabitant = this;
         }
     }
     public void Die()

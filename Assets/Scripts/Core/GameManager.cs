@@ -21,7 +21,6 @@ public class GameManager : MonoBehaviour
         {
             _wood = value;
             UIManager.instance.UpdateUI();
-            Debug.Log("Wood" + Wood);
         }
     }
     int _wood;
@@ -35,7 +34,6 @@ public class GameManager : MonoBehaviour
         {
             _stone = value;
             UIManager.instance.UpdateUI();
-            Debug.Log("Stone" + Stone);
         }
     }
     int _stone;
@@ -49,7 +47,6 @@ public class GameManager : MonoBehaviour
         {
             _food = value;
             UIManager.instance.UpdateUI();
-            Debug.Log("Food" + Food);
         }
     }
     int _food;
@@ -144,14 +141,7 @@ public class GameManager : MonoBehaviour
 
     void StartDay()
     {
-        int nblist = Villager.list.Count;
-        for (int i = 0; i < nblist; i++)
-        {
-            if (!Villager.list[i].isExhausted)
-            {
-                StartCoroutine(Villager.list[i].GoToWork());
-            }
-        }
+
     }
 
     void EndDay()
@@ -176,7 +166,6 @@ public class GameManager : MonoBehaviour
         {
             for (int i = 0; i < listCount; i++)
             {
-                Villager.listHasWorked[i].StopAllCoroutines();
                 Villager.listHasWorked[i].GoToSleep();
             }
         }

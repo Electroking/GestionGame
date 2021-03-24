@@ -4,18 +4,37 @@ using UnityEngine;
 
 public class Student : Job
 {
+    float timeToLearn = 20, timer = 0;
+    public Job.Type jobToLearn;
     public Student() : base()
     {
 
     }
 
-    public override IEnumerator DoTheWork()
+    public override bool DoTheWork()
     {
-        yield return null;
+        timer += Time.deltaTime;
+        if (timer >= timeToLearn)
+        {
+            villager.AssignJob(jobToLearn);
+            return true;
+        }
+        return false;
     }
 
-    public override Vector3 GetWorkplacePos()
+    public override bool GetWorkplacePos(out Vector3 workplace)
     {
-        return Vector3.zero;
+        workplace = Vector3.zero;
+        if (School.list.Count == 0) return false;
+        int schoolIndex = 0;
+        for (int i = 0; i < School.list.Count; i++)
+        {
+            if (Vector3.Distance(villager.transform.position, School.list[schoolIndex].transform.position) > Vector3.Distance(villager.transform.position, School.list[i].transform.position))
+            {
+                schoolIndex = i;
+            }
+        }
+        workplace = School.list[schoolIndex].transform.position;
+        return true;
     }
 }

@@ -47,9 +47,9 @@ public abstract class Job
 
     }
 
-    public abstract Vector3 GetWorkplacePos();
+    public abstract bool GetWorkplacePos(out Vector3 workplace);
 
-    public abstract IEnumerator DoTheWork();
+    public abstract bool DoTheWork();
 
     public override string ToString()
     {

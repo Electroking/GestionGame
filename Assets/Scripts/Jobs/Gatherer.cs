@@ -7,24 +7,27 @@ public class Gatherer : Job
 {
     public static Dictionary<GameObject, Villager> bushDic = new Dictionary<GameObject, Villager>();
     public static GameObject[] bushArray;
-    float bushRadius = 1;
+    float bushRadius = 1, timeToWork = 1, timer = 0;
 
     public Gatherer() : base()
     {
     }
 
 
-    public override IEnumerator DoTheWork()
+    public override bool DoTheWork()
     {
-        while (!villager.isExhausted)
+        timer += Time.deltaTime;
+        if (timer >= timeToWork)
         {
-            yield return new WaitForSeconds(1);
             GameManager.instance.Food += 1;
+            timer -= timeToWork;
         }
+        return false;
     }
 
-    public override Vector3 GetWorkplacePos()
+    public override bool GetWorkplacePos(out Vector3 workplace)
     {
+        workplace = Vector3.zero;
         bushArray = bushArray.OrderBy((d) => (d.transform.position - villager.transform.position).sqrMagnitude).ToArray();
         for (int i = 0; i < bushArray.Length; i++)
         {
@@ -32,9 +35,10 @@ public class Gatherer : Job
             {
                 bushDic[bushArray[i]] = villager;
                 Vector3 relative = bushArray[i].transform.position - villager.transform.position;
-                return relative - relative.normalized * bushRadius * bushArray[i].transform.localScale.x + villager.transform.position;
+                workplace = relative - relative.normalized * bushRadius * bushArray[i].transform.localScale.x + villager.transform.position;
+                return true;
             }
         }
-        return Vector3.zero;
+        return false;
     }
 }
