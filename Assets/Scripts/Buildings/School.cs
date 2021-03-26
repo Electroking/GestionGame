@@ -8,7 +8,7 @@ public class School : Building
     public static List<School> list = new List<School>();
 
     protected override void OnBuilt() {
-        // when building gets buit
+        list.Add(this);
     }
 
     public void ChangeJob(Villager villager)

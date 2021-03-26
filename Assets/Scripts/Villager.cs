@@ -33,6 +33,7 @@ public class Villager : MonoBehaviour
 
     void Update()
     {
+        if(GameManager.instance.IsPaused) return;
         if (!isExhausted)
         {
             GoToWork();

@@ -16,6 +16,7 @@ public class PoolManager : MonoBehaviour
     Queue<Villager> _pooledVillagers = new Queue<Villager>();
     Transform _poolVillager, _poolBuildings;
     [SerializeField] NavMeshSurface navMeshSurface = null;
+    [SerializeField] bool spawnNewVillagers = false;
     float time, reload;
 
     private void Awake()
@@ -39,6 +40,7 @@ public class PoolManager : MonoBehaviour
     }
     private void Update()
     {
+        if(!spawnNewVillagers) return;
         if( Time.time > time)
         {
             SpawnVillager(NewVillagerPos());
