@@ -6,10 +6,10 @@ public class Library : Building
 {
     public static int nbLibraries;
 
-    protected override void Built()
+    protected override void OnBuilt()
     {
         nbLibraries += 1;
-        StartCoroutine("UpProsperity");
+        StartCoroutine(nameof(UpProsperity));
     }
     IEnumerator UpProsperity()
     {

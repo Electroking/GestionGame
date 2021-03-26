@@ -7,7 +7,7 @@ public class Farm : Building
     public static List<Farm> list = new List<Farm>();
     public int workersCapacity = 4, nbWorkers;
 
-    protected override void Built()
+    protected override void OnBuilt()
     {
         list.Add(this);
     }

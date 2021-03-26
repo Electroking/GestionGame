@@ -4,13 +4,19 @@ using UnityEngine;
 
 public class PlayerCamera : MonoBehaviour
 {
-    float lastMousePosX, lastRotateY = 0f;
     [SerializeField] float speed = 10f, rotateSpeed = 1f, zMinZoom = -20, zMaxZoom = -80;
-    bool lmpIsUsed = false, zoomIsUsed = false, rotateIsUsed = false, translateIsUsed = false;
+    bool rotateIsUsed = false, translateIsUsed = false;
+    float lastMousePosX, lastRotateY = 0f;
+    Transform _stick;
+
+    private void Awake() {
+        _stick = transform.GetChild(0).GetChild(0).transform;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        Mathf.Clamp(transform.GetChild(0).GetChild(0).transform.position.z, zMaxZoom, zMinZoom);
+        Mathf.Clamp(_stick.position.z, zMaxZoom, zMinZoom);
         lastMousePosX = Input.mousePosition.x;
     }
 
@@ -19,6 +25,7 @@ public class PlayerCamera : MonoBehaviour
     {
         MoveCam();
     }
+
     void MoveCam()
     {
         LateralMoveCam();
@@ -57,7 +64,7 @@ public class PlayerCamera : MonoBehaviour
     }
     void RotationMoveCam()
     {
-        lmpIsUsed = false;
+        //lmpIsUsed = false;
         if (Input.GetMouseButtonDown(1))
         {
             lastMousePosX = Input.mousePosition.x;
@@ -65,7 +72,7 @@ public class PlayerCamera : MonoBehaviour
         }
         if (Input.GetMouseButton(1) && !translateIsUsed)
         {
-            lmpIsUsed = true;
+            //lmpIsUsed = true;
             transform.rotation = Quaternion.Euler(Vector3.up * 0.01f * rotateSpeed * (Input.mousePosition.x - lastMousePosX + lastRotateY));
         }
         if(Input.GetMouseButtonUp(1))
@@ -76,23 +83,23 @@ public class PlayerCamera : MonoBehaviour
     }
     void ZoomCam()
     {
-        zoomIsUsed = false;
+        //zoomIsUsed = false;
         if (!rotateIsUsed)
         {
             if (Input.mouseScrollDelta.y > 0f)
             {
-                zoomIsUsed = true;
-                if (transform.GetChild(0).GetChild(0).transform.localPosition.z < zMinZoom)
+                //zoomIsUsed = true;
+                if (_stick.localPosition.z < zMinZoom)
                 {
-                    transform.GetChild(0).GetChild(0).transform.localPosition += new Vector3(0, 0, 5);
+                    _stick.localPosition += new Vector3(0, 0, 5);
                 }
             }
             if (Input.mouseScrollDelta.y < 0f)
             {
-                zoomIsUsed = true;
-                if (transform.GetChild(0).GetChild(0).transform.localPosition.z > zMaxZoom)
+                //zoomIsUsed = true;
+                if (_stick.localPosition.z > zMaxZoom)
                 {
-                    transform.GetChild(0).GetChild(0).transform.localPosition -= new Vector3(0, 0, 5);
+                    _stick.localPosition -= new Vector3(0, 0, 5);
                 }
             }
         }

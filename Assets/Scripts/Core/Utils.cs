@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 
 public static class Utils {
     public const string LAYER_BUILDING = "Building", LAYER_VILLAGER = "Villager", LAYER_UI = "UI", LAYER_ENVIRONMENT = "Environment", LAYER_TERRAIN = "Terrain";
+    public const string TAG_TREE = "Tree", TAG_MINE = "Mine", TAG_BUSH = "Bush";
 
     public static bool IsPointerOverUIElement() {
         // setup the pointer pos and event system

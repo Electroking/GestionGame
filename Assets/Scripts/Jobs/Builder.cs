@@ -7,7 +7,7 @@ public class Builder : Job
 {
     public static List<Villager> idleList = new List<Villager>();
     const int maxBuildersPerBuilding = 2;
-    const float workAmountPerSecond = 0.1f;
+    const float workAmountPerSecond = 1f;
     Building building;
 
     public Builder() : base()

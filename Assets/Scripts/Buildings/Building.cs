@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public abstract class Building : MonoBehaviour
 {
@@ -17,11 +18,20 @@ public abstract class Building : MonoBehaviour
     public int resourceW;
     public float nbBuilder;
 
+    float Progression {
+        get { return _progression; }
+        set {
+            _progression = Mathf.Clamp(value, 0, _maxProgression);
+            _model.transform.localPosition = Vector3.up * (2 * _progression / _maxProgression - 1);
+        }
+    }
+    [SerializeField] float _maxProgression = 10;
     float _progression = 0;
-    MeshRenderer[] renderers;
-    GameObject model;
-    bool canbePlaced = false;
-    float colorAlpha = 1;
+    MeshRenderer[] _renderers;
+    NavMeshObstacle _obstacle;
+    GameObject _model;
+    bool _canbePlaced = false;
+    float _colorAlpha = 1;
 
     public enum Type
     {
@@ -30,8 +40,10 @@ public abstract class Building : MonoBehaviour
 
     private void Awake()
     {
-        model = transform.GetChild(0).gameObject;
-        renderers = GetComponentsInChildren<MeshRenderer>();
+        _model = transform.GetChild(1).gameObject;
+        _obstacle = GetComponent<NavMeshObstacle>();
+        _obstacle.enabled = false;
+        _renderers = GetComponentsInChildren<MeshRenderer>();
         collider = GetComponentInChildren<Collider>();
         for (int i = 0; i < transform.childCount; i++)
         {
@@ -41,7 +53,7 @@ public abstract class Building : MonoBehaviour
 
     protected virtual void Start()
     {
-        transform.localScale *= 0.5f;
+        //transform.localScale *= 0.5f;
     }
 
     protected virtual void Update()
@@ -59,25 +71,26 @@ public abstract class Building : MonoBehaviour
         if (!CheckifEnoughResources()) { return false; }
         ExpendResources();
         unbuiltList.Add(this);
+        _model.transform.localPosition = -Vector3.up;
+        _obstacle.enabled = true;
         return isPlaced = true;
     }
 
-    public void Build(float amount)
-    {
-        if (isBuilt) { return; }
-        _progression = Mathf.Clamp01(_progression + amount);
-        transform.localScale = Vector3.one * 0.5f * (_progression + 1);
-        if (_progression >= 1)
-        {
+    public void Build(float amount) {
+        if(isBuilt) { return; }
+        Progression += amount;
+        if(Progression >= _maxProgression) {
+            isBuilt = true;
+            unbuiltList.Remove(this);
+            //Debug.Log(name + " has been built!");
             OnBuilt();
         }
-        }
+    }
 
-        private void ExpendResources()
+    private void ExpendResources()
     {
         GameManager.instance.Stone -= resourceS;
         GameManager.instance.Wood -= resourceW;
-        //Build();
     }
 
     private bool CheckifEnoughResources()
@@ -85,7 +98,7 @@ public abstract class Building : MonoBehaviour
         return GameManager.instance.Stone >= resourceS && GameManager.instance.Wood >= resourceW;
     }
 
-    IEnumerator Construct(float nbSeconds)
+    /*IEnumerator Construct(float nbSeconds)
     {
 
         float seconds = 0;
@@ -98,30 +111,19 @@ public abstract class Building : MonoBehaviour
         // at this point, the building has been built
         Debug.Log("Construct");
         OnBuilt();
-    }
+    }*/
 
-    protected void OnBuilt()
-    {
-        isBuilt = true;
-        unbuiltList.Remove(this);
-        Debug.Log(name + " has been built!");
-        Built();
-    }
-    protected virtual void Built()
-    {
-    }
+    protected abstract void OnBuilt();
 
-        void ChangeAlpha(float newAlpha)
-    {
-        if (newAlpha == colorAlpha) { return; }
+    void ChangeAlpha(float newAlpha) {
+        if(newAlpha == _colorAlpha) { return; }
         Color matColor;
-        for (int i = 0; i < renderers.Length; i++)
-        {
-            matColor = renderers[i].material.color;
+        for(int i = 0; i < _renderers.Length; i++) {
+            matColor = _renderers[i].material.color;
             matColor.a = newAlpha;
-            renderers[i].material.color = matColor;
+            _renderers[i].material.color = matColor;
         }
-        colorAlpha = newAlpha;
+        _colorAlpha = newAlpha;
     }
 
     bool CheckIfCanBePlaced()
@@ -131,14 +133,14 @@ public abstract class Building : MonoBehaviour
         {
             if (colliders[i].tag == "Village" && colliders[i] != collider)
             {
-                return canbePlaced = false;
+                return _canbePlaced = false;
             }
             else if (colliders[i].tag == "Villager")
             {
-                return canbePlaced = false;
+                return _canbePlaced = false;
             }
         }
-        return canbePlaced = true;
+        return _canbePlaced = true;
     }
 }
 

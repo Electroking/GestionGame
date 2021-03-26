@@ -6,18 +6,22 @@ using UnityEngine.AI;
 public class Villager : MonoBehaviour
 {
     public static List<Villager> list = new List<Villager>();
-    public static List<Villager> listHasWorked = new List<Villager>(), listHasSleep = new List<Villager>();
-    public static int nbShouldSleep, nbSleeping;
+    public static List<Villager> listHasWorked = new List<Villager>(), listHasSlept = new List<Villager>();
+    //public static int nbShouldSleep, nbSleeping;
     public int age;
-    public bool isExhausted = false;
+    public bool isExhausted = false, hasWorked = false;
     public Job job;
 
     NavMeshAgent _agent;
+    MeshRenderer _mr;
+    Collider _coll;
     bool _isWorking = false, _isMoving = false, _isGoingToWork = false;
     Vector3 _workplace;
 
     void Awake()
     {
+        _mr = GetComponentInChildren<MeshRenderer>();
+        _coll = GetComponentInChildren<Collider>();
         _agent = GetComponent<NavMeshAgent>();
 
         list.Add(this);
@@ -32,6 +36,9 @@ public class Villager : MonoBehaviour
         if (!isExhausted)
         {
             GoToWork();
+        } else {
+            _isWorking = false;
+            _isGoingToWork = false;
         }
     }
 
@@ -60,14 +67,16 @@ public class Villager : MonoBehaviour
         if (!_isMoving)
         {
             bool validDestination = _agent.SetDestination(targetPos);
-            Debug.Log($"validDestination: {validDestination}");
+            //Debug.Log($"validDestination: {validDestination}");
             _isMoving = true;
         }
-        if (transform.position.x == targetPos.x && transform.position.z == targetPos.z)
-        {
-            Debug.Log("==> Arrived at destination.");
-            _isMoving = false;
-            return true;
+        //if (transform.position.x == targetPos.x && transform.position.z == targetPos.z)
+        if (Vector3.Distance(_agent.destination, transform.position) <= _agent.stoppingDistance) {
+            if(!_agent.hasPath || _agent.velocity.sqrMagnitude == 0f) {
+                //Debug.Log("==> Arrived at destination.");
+                _isMoving = false;
+                return true;
+            }
         }
         return false;
         /*
@@ -115,6 +124,7 @@ public class Villager : MonoBehaviour
             {
                 _isWorking = false;
             }
+            hasWorked = true;
         }
     }
 
@@ -124,12 +134,21 @@ public class Villager : MonoBehaviour
         {
             yield return null;
         }
-        nbSleeping++;
+        //nbSleeping++;
+        listHasSlept.Add(this);
+        Hide(true);
     }
+
+    public void Hide(bool hide) {
+        _mr.enabled = !hide;
+        _coll.enabled = !hide;
+        _agent.enabled = !hide;
+    }
+
     public void Die()
     {
         list.Remove(this);
-        listHasWorked.Remove(this);
+        //listHasWorked.Remove(this);
         Destroy(gameObject);
     }
 }
