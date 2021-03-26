@@ -36,17 +36,11 @@ public class Villager : MonoBehaviour
         if (!isExhausted)
         {
             GoToWork();
-        } else {
+        }
+        else
+        {
             _isWorking = false;
             _isGoingToWork = false;
-        }
-    }
-
-    private void OnMouseDown()
-    {
-        if (Input.GetMouseButtonDown(1))
-        {
-            //jobMenu.SetActive(true);
         }
     }
 
@@ -70,8 +64,10 @@ public class Villager : MonoBehaviour
             _isMoving = true;
         }
         //if (transform.position.x == targetPos.x && transform.position.z == targetPos.z)
-        if (Vector3.Distance(_agent.destination, transform.position) <= _agent.stoppingDistance) {
-            if(!_agent.hasPath || _agent.velocity.sqrMagnitude == 0f) {
+        if (Vector3.Distance(_agent.destination, transform.position) <= _agent.stoppingDistance)
+        {
+            if (!_agent.hasPath || _agent.velocity.sqrMagnitude == 0f)
+            {
                 //Debug.Log("==> Arrived at destination.");
                 _isMoving = false;
                 return true;
@@ -138,7 +134,8 @@ public class Villager : MonoBehaviour
         Hide(true);
     }
 
-    public void Hide(bool hide) {
+    public void Hide(bool hide)
+    {
         _mr.enabled = !hide;
         _coll.enabled = !hide;
         _agent.enabled = !hide;
