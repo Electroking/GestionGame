@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class Farm : Building
 {
-    public static List<Farm> farmsList = new List<Farm>();
+    public static List<Farm> list = new List<Farm>();
+    public int workersCapacity = 4, nbWorkers;
 
     protected override void Built()
     {
-        farmsList.Add(this);
+        list.Add(this);
     }
 }

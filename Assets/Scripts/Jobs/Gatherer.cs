@@ -28,14 +28,25 @@ public class Gatherer : Job
     public override bool GetWorkplacePos(out Vector3 workplace)
     {
         workplace = Vector3.zero;
+        if (Farm.list.Count >= 0)
+        {
+            List<Farm> farmListOrdered = Farm.list.OrderBy((d) => (d.transform.position - villager.transform.position).sqrMagnitude).ToList();
+            for (int i = 0; i < farmListOrdered.Count; i++)
+            {
+                if (farmListOrdered[i].nbWorkers < farmListOrdered[i].workersCapacity)
+                {
+                    workplace = farmListOrdered[i].transform.position;
+                    return true;
+                }
+            }
+        }
         bushArray = bushArray.OrderBy((d) => (d.transform.position - villager.transform.position).sqrMagnitude).ToArray();
         for (int i = 0; i < bushArray.Length; i++)
         {
             if (bushDic[bushArray[i]] == null || bushDic[bushArray[i]] == villager)
             {
                 bushDic[bushArray[i]] = villager;
-                Vector3 relative = bushArray[i].transform.position - villager.transform.position;
-                workplace = relative - relative.normalized * bushRadius * bushArray[i].transform.localScale.x + villager.transform.position;
+                workplace = bushArray[i].transform.position;
                 return true;
             }
         }
