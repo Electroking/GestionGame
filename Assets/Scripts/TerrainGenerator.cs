@@ -13,6 +13,7 @@ public class TerrainGenerator : MonoBehaviour {
     [SerializeField] int terrainHeight = 10;
     [SerializeField] float scale = 1;
     [SerializeField] Vector2 offset = Vector2.zero;*/
+    [SerializeField] LineRenderer lr = null;
     Terrain _terrain;
     TerrainCollider _collider;
     NavMeshSurface _surface;
@@ -85,7 +86,7 @@ public class TerrainGenerator : MonoBehaviour {
         }*/
         //Debug.Log($"Trees: {TreePositions.Length}; Rocks: {RockPositions.Length}; Bushes: {BushPositions.Length}");
 
-
+        DrawSquareLine();
         UpdateNavMesh();
 
         Vector3 center = new Vector3(tData.size.x, 0, tData.size.z) * 0.5f;
@@ -112,5 +113,18 @@ public class TerrainGenerator : MonoBehaviour {
         Vector3 newPosition = position;
         newPosition.y = GameManager.instance.GetTerrainHeight(newPosition);
         return newPosition;
+    }
+    public void DrawSquareLine()
+    {
+        TerrainData tData = _terrain.terrainData;
+        Transform line = lr.transform;
+        float y = 2f;
+        line.position = new Vector3(tData.size.x, 0, tData.size.z) * 0.5f;
+        Vector3 squareSize = new Vector3(_terrain.terrainData.size.x, 0, _terrain.terrainData.size.z) / 6f;
+        Vector3 a = new Vector3(-squareSize.x, y, -squareSize.z);
+        Vector3 b = new Vector3(-squareSize.x, y, squareSize.z);
+        Vector3 c = new Vector3(squareSize.x, y, squareSize.z);
+        Vector3 d = new Vector3(squareSize.x, y, -squareSize.z);
+        lr.SetPositions( new Vector3[] {a, b, c, d, a});
     }
 }
