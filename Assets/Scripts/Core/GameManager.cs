@@ -14,7 +14,6 @@ public class GameManager : MonoBehaviour
         set { _prosperity = Mathf.Clamp(value, 0, maxProsperity);
         }
     }
-    float _prosperity;
     public float maxProsperity = 100f;
     public int Wood
     {
@@ -28,7 +27,6 @@ public class GameManager : MonoBehaviour
             UIManager.instance.UpdateUI();
         }
     }
-    int _wood;
     public int Stone
     {
         get
@@ -41,7 +39,6 @@ public class GameManager : MonoBehaviour
             UIManager.instance.UpdateUI();
         }
     }
-    int _stone;
     public int Food
     {
         get
@@ -54,14 +51,22 @@ public class GameManager : MonoBehaviour
             UIManager.instance.UpdateUI();
         }
     }
-    int _food;
+    public bool IsPaused {
+        get { return _isPaused; }
+        set {
+            _isPaused = value;
+            ChangeGameSpeed(value ? 0 : _gameSpeed);
+        }
+    }
 
     //privates
     public float timeOfDay, dayLength = 20, nightLength = 1;
     //[SerializeField] Vector3 terrainSize = Vector3.one;
     [SerializeField] int startVillagerCount = 5;
     [SerializeField] float spawnRadius = 1;
-    bool isDayEnding = false;
+    int _food, _stone, _wood;
+    bool _isDayEnding = false, _isPaused = false;
+    float _prosperity, _gameSpeed = 1;
 
     //publics
     [HideInInspector] public Bounds mapBounds;
@@ -94,9 +99,9 @@ public class GameManager : MonoBehaviour
         }*/
 
         timeOfDay += Time.deltaTime;
-        if (!isDayEnding && timeOfDay >= dayLength)
+        if (!_isDayEnding && timeOfDay >= dayLength)
         {
-            isDayEnding = true;
+            _isDayEnding = true;
             StartCoroutine(EndDay());
         }
     }
@@ -222,11 +227,16 @@ public class GameManager : MonoBehaviour
         }
         // at the end
         timeOfDay = 0;
-        isDayEnding = false;
+        _isDayEnding = false;
     }
 
-    public void ChangeGameSpeed(int timeScale)
+    public void PauseGame(bool pause) {
+        IsPaused = pause;
+    }
+
+    public void ChangeGameSpeed(float timeScale)
     {
+        if(timeScale > 0) _gameSpeed = timeScale;
         Time.timeScale = timeScale;
     }
 
