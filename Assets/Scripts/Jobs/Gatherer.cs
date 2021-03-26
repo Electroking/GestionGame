@@ -27,6 +27,7 @@ public class Gatherer : Job
         {
             GameManager.instance.Food += 1;
             timer -= timeToWork;
+            return true;
         }
         return false;
     }
