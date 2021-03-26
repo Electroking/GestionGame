@@ -5,13 +5,16 @@ using UnityEngine.UI;
 
 public class PopUpInfo : MonoBehaviour
 {
-    Text text;
-    public Building.Type bType;
+    //Text text;
+    [SerializeField] Building.Type buildingType;
+
     private void Awake()
     {
-        text = transform.GetChild(0).GetChild(0).GetComponent<Text>();
+        Text text = GetComponentInChildren<Text>();
+        text.text = "Stone: " + buildingType.GetStoneCost() + ", Wood: " + buildingType.GetWoodCost();
     }
-    public void SetText(int numType)
+
+    /*public void SetText(int numType)
     {
         int stone, wood;
         switch (numType)
@@ -37,6 +40,6 @@ public class PopUpInfo : MonoBehaviour
                 text.text = "Library Cost :\nStone : " + stone + "\nWood : " + wood;
                 break;
         }
-    }
+    }*/
 
 }

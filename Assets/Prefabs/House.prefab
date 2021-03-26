@@ -51,8 +51,8 @@ MonoBehaviour:
   builders: []
   isPlaced: 0
   isBuilt: 0
-  resourceS: 2
-  resourceW: 2
+  resourceS: 1
+  resourceW: 1
   nbBuilder: 0
   _maxProgression: 2
   inhabitant: {fileID: 0}

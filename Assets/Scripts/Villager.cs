@@ -7,6 +7,8 @@ public class Villager : MonoBehaviour
 {
     public static List<Villager> list = new List<Villager>();
     public static List<Villager> listHasWorked = new List<Villager>(), listHasSlept = new List<Villager>();
+    static List<string> usedNames = new List<string>();
+
     //public static int nbShouldSleep, nbSleeping;
     public int age;
     public bool isExhausted = false, hasWorked = false;
@@ -28,6 +30,7 @@ public class Villager : MonoBehaviour
     }
     void Start()
     {
+        name = FindName();
         age = 0;
     }
 
@@ -43,6 +46,21 @@ public class Villager : MonoBehaviour
             _isWorking = false;
             _isGoingToWork = false;
         }
+    }
+
+    string FindName() {
+        string name;
+        int nbLoop = 0;
+        do {
+            name = Utils.GetRandomName();
+            nbLoop++;
+        } while(usedNames.Contains(name) && nbLoop < 200);
+        if(nbLoop < 200) {
+            usedNames.Add(name);
+        } else {
+            name = "Anne Honimousse";
+        }
+        return name;
     }
 
     public void JobSwitch(int jobType)

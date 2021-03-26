@@ -47,7 +47,7 @@ public class Builder : Job
                     }
                     building = unbuiltBuildings[i];
                     building.builders.Add(villager);
-                    workplace = building.transform.position; // TODO: get the closest possible position to the building
+                    workplace = building.transform.position;
                     return true;
                 }
             }

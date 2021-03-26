@@ -5,12 +5,13 @@ using UnityEngine.UI;
 
 public class UIVillagerInfos : MonoBehaviour
 {
-    public Villager villager;
+    public Villager villager = null;
     [SerializeField] Text villagerNameTxt;
     [SerializeField] GameObject jobChangePanel;
 
     private void Update()
     {
+        if(villager == null) return;
         villagerNameTxt.text = villager.name;
     }
 

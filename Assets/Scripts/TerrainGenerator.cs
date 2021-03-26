@@ -85,12 +85,11 @@ public class TerrainGenerator : MonoBehaviour {
             }
         }*/
         //Debug.Log($"Trees: {TreePositions.Length}; Rocks: {RockPositions.Length}; Bushes: {BushPositions.Length}");
-
-        DrawSquareLine();
+        Bounds mapBounds = new Bounds(new Vector3(tData.size.x, 0, tData.size.z) * 0.5f, new Vector3(tData.size.x, 0, tData.size.z)); ;
+        DrawSquareLine(mapBounds);
         UpdateNavMesh();
 
-        Vector3 center = new Vector3(tData.size.x, 0, tData.size.z) * 0.5f;
-        return new Bounds(center, new Vector3(tData.size.x, 0, tData.size.z));
+        return mapBounds;
     }
 
     /*float[,] GenerateHeights() {
@@ -114,17 +113,15 @@ public class TerrainGenerator : MonoBehaviour {
         newPosition.y = GameManager.instance.GetTerrainHeight(newPosition);
         return newPosition;
     }
-    public void DrawSquareLine()
+    public void DrawSquareLine(Bounds mapBounds)
     {
-        TerrainData tData = _terrain.terrainData;
-        Transform line = lr.transform;
         float y = 2f;
-        line.position = new Vector3(tData.size.x, 0, tData.size.z) * 0.5f;
-        Vector3 squareSize = new Vector3(_terrain.terrainData.size.x, 0, _terrain.terrainData.size.z) / 6f;
-        Vector3 a = new Vector3(-squareSize.x, y, -squareSize.z);
-        Vector3 b = new Vector3(-squareSize.x, y, squareSize.z);
-        Vector3 c = new Vector3(squareSize.x, y, squareSize.z);
-        Vector3 d = new Vector3(squareSize.x, y, -squareSize.z);
-        lr.SetPositions( new Vector3[] {a, b, c, d, a});
+        lr.transform.position = mapBounds.center;
+        Vector3 squareSize = new Vector3(mapBounds.size.x, 0, mapBounds.size.z) / 6f;
+        Vector3 a = mapBounds.center + new Vector3(-squareSize.x, y, -squareSize.z);
+        Vector3 b = mapBounds.center + new Vector3(-squareSize.x, y, squareSize.z);
+        Vector3 c = mapBounds.center + new Vector3(squareSize.x, y, squareSize.z);
+        Vector3 d = mapBounds.center + new Vector3(squareSize.x, y, -squareSize.z);
+        lr.SetPositions( new Vector3[] {a, b, c, d});
     }
 }

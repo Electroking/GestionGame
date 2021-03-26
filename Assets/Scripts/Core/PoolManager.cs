@@ -7,16 +7,17 @@ public class PoolManager : MonoBehaviour
 {
     public static PoolManager instance = null;
 
-    [SerializeField] Villager prefabVillager = null;
-    [SerializeField] House prefabHouse = null;
-    [SerializeField] School prefabSchool = null;
-    [SerializeField] Farm prefabFarm = null;
-    [SerializeField] Library prefabLibrary = null;
-    [SerializeField] Museum prefabMuseum = null;
-    Queue<Villager> _pooledVillagers = new Queue<Villager>();
-    Transform _poolVillager, _poolBuildings;
+    public Villager prefabVillager = null;
+    public House prefabHouse = null;
+    public School prefabSchool = null;
+    public Farm prefabFarm = null;
+    public Library prefabLibrary = null;
+    public Museum prefabMuseum = null;
+
     [SerializeField] NavMeshSurface navMeshSurface = null;
     [SerializeField] bool spawnNewVillagers = false;
+    Queue<Villager> _pooledVillagers = new Queue<Villager>();
+    Transform _poolVillager, _poolBuildings;
     float time, reload;
 
     private void Awake()

@@ -7,16 +7,16 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager instance = null;
 
-    Canvas _canvas;
+    //Canvas _canvas;
     Building _selectedBuilding = null;
     [SerializeField] Text foodText = null, woodText = null, stoneText = null;
     GameManager gm;
-    [SerializeField] PopUpInfo[] popUpPanel;
+    //[SerializeField] PopUpInfo[] popUpPanel;
     [SerializeField] Slider sliderTime;
     [SerializeField] Slider prospSlider;
     [SerializeField] UIVillagerInfos uiVillager;
     float dayLenght, timeOfDay, prosp, maxProsp;
-    int i = 0;
+    //int i = 0;
 
     private void Awake()
     {
@@ -30,7 +30,7 @@ public class UIManager : MonoBehaviour
         }
         DontDestroyOnLoad(gameObject);
 
-        _canvas = FindObjectOfType<Canvas>();
+        //_canvas = FindObjectOfType<Canvas>();
     }
     void Start()
     {
@@ -52,18 +52,19 @@ public class UIManager : MonoBehaviour
         {
             if (GetTerrainPointHovered(out Vector3 terrainPoint, true))
             {
-
                 MoveSelectedBuilding(terrainPoint);
                 if (leftClick)
                 {
-                    PlaceSelectedBuilding();
+                    if (!Utils.IsPointerOverUIElement()) {
+                        PlaceSelectedBuilding();
+                    }
                 }
             }
         }
-        if (Input.GetMouseButtonDown(0))
+        if (leftClick)
         {
             Villager villager;
-            if ((villager = CheckIfVillagerClick()) != null)
+            if ((villager = CheckIfOverVillager()) != null)
             {
                 OnVillagerClick(villager);
             }
@@ -146,7 +147,8 @@ public class UIManager : MonoBehaviour
         }
         return false;
     }
-    public void SpawnPopUpInfo(int numType)
+
+    /*public void SpawnPopUpInfo(int numType)
     {
         switch (numType)
         {
@@ -172,33 +174,34 @@ public class UIManager : MonoBehaviour
     public void ClosePopUpInfo()
     {
         popUpPanel[i].gameObject.SetActive(false);
-    }
+    }*/
+
     void InitSliderOfTime()
     {
-        dayLenght = GameManager.instance.dayLength;
-        timeOfDay = GameManager.instance.timeOfDay;
+        //dayLenght = gm.dayLength;
+        //timeOfDay = GameManager.instance.timeOfDay;
         sliderTime.maxValue = 1;
-        sliderTime.value = timeOfDay;
+        sliderTime.value = gm.timeOfDay;
     }
     void UpdateSliderOfTime()
     {
-        timeOfDay = GameManager.instance.timeOfDay;
-        sliderTime.value = timeOfDay / dayLenght;
+        //timeOfDay = GameManager.instance.timeOfDay;
+        sliderTime.value = gm.timeOfDay / gm.dayLength;
     }
     void InitSliderOfProsp()
     {
-        prosp = GameManager.instance.Prosperity;
-        maxProsp = GameManager.instance.maxProsperity;
+        //prosp = GameManager.instance.Prosperity;
+        //maxProsp = GameManager.instance.maxProsperity;
         prospSlider.maxValue = 1;
-        prospSlider.value = prosp / maxProsp;
+        prospSlider.value = gm.Prosperity / gm.maxProsperity;
     }
     void UpdateSliderOfProsp()
     {
-        prosp = GameManager.instance.Prosperity;
-        prospSlider.value = prosp / maxProsp;
+        //prosp = GameManager.instance.Prosperity;
+        prospSlider.value = gm.Prosperity / gm.maxProsperity;
     }
 
-    Villager CheckIfVillagerClick()
+    Villager CheckIfOverVillager()
     {
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -212,6 +215,7 @@ public class UIManager : MonoBehaviour
         }
         return null;
     }
+
     void OnVillagerClick(Villager villager)
     {
         Debug.Log(villager.name);
