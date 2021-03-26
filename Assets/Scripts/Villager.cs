@@ -58,8 +58,7 @@ public class Villager : MonoBehaviour
 
     public void AssignJob(Job.Type jobType, bool trueJobsOnly = false)
     {
-        job = Job.GetNewJob(jobType, trueJobsOnly);
-        if (job != null) job.villager = this;
+        job = Job.GetNewJob(this, jobType, trueJobsOnly);
     }
 
     public bool Move(Vector3 targetPos)
