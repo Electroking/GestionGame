@@ -14,6 +14,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] PopUpInfo[] popUpPanel;
     [SerializeField] Slider sliderTime;
     [SerializeField] Slider prospSlider;
+    [SerializeField] UIVillagerInfos uiVillager;
     float dayLenght, timeOfDay, prosp, maxProsp;
     int i = 0;
 
@@ -57,6 +58,14 @@ public class UIManager : MonoBehaviour
                 {
                     PlaceSelectedBuilding();
                 }
+            }
+        }
+        if (Input.GetMouseButtonDown(0))
+        {
+            Villager villager;
+            if ((villager = CheckIfVillagerClick()) != null)
+            {
+                OnVillagerClick(villager);
             }
         }
     }
@@ -139,7 +148,7 @@ public class UIManager : MonoBehaviour
     }
     public void SpawnPopUpInfo(int numType)
     {
-        switch(numType)
+        switch (numType)
         {
             case 0:
                 i = 0; //House
@@ -174,18 +183,39 @@ public class UIManager : MonoBehaviour
     void UpdateSliderOfTime()
     {
         timeOfDay = GameManager.instance.timeOfDay;
-        sliderTime.value = timeOfDay/dayLenght;
+        sliderTime.value = timeOfDay / dayLenght;
     }
     void InitSliderOfProsp()
     {
         prosp = GameManager.instance.Prosperity;
         maxProsp = GameManager.instance.maxProsperity;
         prospSlider.maxValue = 1;
-        prospSlider.value = prosp / maxProsp ;
+        prospSlider.value = prosp / maxProsp;
     }
     void UpdateSliderOfProsp()
     {
         prosp = GameManager.instance.Prosperity;
         prospSlider.value = prosp / maxProsp;
+    }
+
+    Villager CheckIfVillagerClick()
+    {
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out hit))
+        {
+            if (hit.collider.tag == "Villager")
+            {
+                //jobMenu.SetActive(true);
+                return hit.collider.GetComponentInParent<Villager>();
+            }
+        }
+        return null;
+    }
+    void OnVillagerClick(Villager villager)
+    {
+        Debug.Log(villager.name);
+        uiVillager.villager = villager;
+        uiVillager.gameObject.SetActive(true);
     }
 }

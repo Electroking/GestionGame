@@ -10,7 +10,8 @@ public class Miner : Job
 
     float timeToWork = 1, timer = 0;
 
-    public Miner() : base() {
+    public Miner() : base() 
+    {
         if (mineDic != null) return;
         mineDic = new Dictionary<Vector3, Villager>();
         for(int i = 0; i < mineArray.Length; i++) {
