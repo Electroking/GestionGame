@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class UIManager : MonoBehaviour
 {
@@ -14,7 +15,7 @@ public class UIManager : MonoBehaviour
     //[SerializeField] PopUpInfo[] popUpPanel;
     [SerializeField] Slider sliderTime;
     [SerializeField] Slider prospSlider;
-    [SerializeField] UIVillagerInfos uiVillager;
+    public UIVillagerInfos uiVillager;
     float dayLenght, timeOfDay, prosp, maxProsp;
     //int i = 0;
 
@@ -55,7 +56,8 @@ public class UIManager : MonoBehaviour
                 MoveSelectedBuilding(terrainPoint);
                 if (leftClick)
                 {
-                    if (!Utils.IsPointerOverUIElement()) {
+                    if (!Utils.IsPointerOverUIElement())
+                    {
                         PlaceSelectedBuilding();
                     }
                 }
@@ -63,10 +65,17 @@ public class UIManager : MonoBehaviour
         }
         if (leftClick)
         {
-            Villager villager;
-            if ((villager = CheckIfOverVillager()) != null)
+            if (!EventSystem.current.IsPointerOverGameObject())
             {
-                OnVillagerClick(villager);
+                Villager villager;
+                if ((villager = CheckIfOverVillager()) != null)
+                {
+                    OnVillagerClick(villager);
+                }
+                else
+                {
+                    DeselectVillager();
+                }
             }
         }
     }
@@ -221,5 +230,16 @@ public class UIManager : MonoBehaviour
         Debug.Log(villager.name);
         uiVillager.villager = villager;
         uiVillager.gameObject.SetActive(true);
+    }
+
+    void DeselectVillager()
+    {
+        uiVillager.gameObject.SetActive(false);
+        uiVillager.gameObject.transform.GetChild(2).gameObject.SetActive(false);
+    }
+
+    public void SetActiveSwitch(GameObject go)
+    {
+        go.SetActive(!go.activeSelf);
     }
 }
