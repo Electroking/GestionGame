@@ -14,7 +14,7 @@ public class PoolManager : MonoBehaviour
     public Library prefabLibrary = null;
     public Museum prefabMuseum = null;
 
-    [SerializeField] NavMeshSurface navMeshSurface = null;
+    NavMeshSurface navMeshSurface = null;
     [SerializeField] bool spawnNewVillagers = false;
     Queue<Villager> _pooledVillagers = new Queue<Villager>();
     Transform _poolVillager, _poolBuildings;
@@ -77,17 +77,20 @@ public class PoolManager : MonoBehaviour
     public Villager SpawnVillager(Vector3 spawnPoint)
     {
         Villager villager = UnpoolVillager();
-        villager.transform.position = GameManager.instance.GetTerrainPos(spawnPoint);
+        villager.transform.position = GameManager.instance.GetTerrainPos(spawnPoint, villager.transform.GetChild(0).localScale);
         return villager;
     }
     public Vector3 NewVillagerPos()
     {
-        Vector3 pos = navMeshSurface.navMeshData.position, size = navMeshSurface.navMeshData.sourceBounds.size;
-        float x = Random.Range(pos.x + size.x / 3, pos.x + (size.x - size.x / 3)); //min = x + un tier de la taille, max = x + (size - un tier de la size)
-        float z = Random.Range(pos.z + size.z / 3, pos.z + (size.z - size.z / 3));  //min = z + un tier de la taille, max = z + (size - un tier de la size)
-        Vector3 zxPos = new Vector3(x,0,z);
-        Vector3 finalPos = new Vector3(x, GameManager.instance.GetTerrainHeight(zxPos), z);
-        return finalPos;
+        Bounds mapBounds = GameManager.instance.MapBounds;
+        //Vector3 pos = navMeshSurface.navMeshData.position, size = navMeshSurface.navMeshData.sourceBounds.size;
+        Vector3 minPos = new Vector3(mapBounds.center.x - mapBounds.size.x * 0.5f, 0, mapBounds.center.z - mapBounds.size.z * 0.5f);
+        Vector3 maxPos = new Vector3(mapBounds.center.x + mapBounds.size.x * 0.5f, 0, mapBounds.center.z + mapBounds.size.z * 0.5f);
+        float x = Random.Range(minPos.x, maxPos.x); //min = x + un tier de la taille, max = x + (size - un tier de la size)
+        float z = Random.Range(minPos.z, maxPos.z);  //min = z + un tier de la taille, max = z + (size - un tier de la size)
+        //Vector3 zxPos = new Vector3(x,0,z);
+        //Vector3 finalPos = new Vector3(x, GameManager.instance.GetTerrainHeight(zxPos), z);
+        return new Vector3(x, 0, z);
     }
     public Building SpawnBuilding(Building.Type buildingType)
     {

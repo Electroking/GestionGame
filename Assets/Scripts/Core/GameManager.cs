@@ -58,9 +58,15 @@ public class GameManager : MonoBehaviour
             ChangeGameSpeed(value ? 0 : _gameSpeed);
         }
     }
+    public Bounds MapBounds { 
+        get; private set; 
+    }
+    
+    //publics
+    [HideInInspector] public TerrainGenerator terrain;
+    public float timeOfDay, dayLength = 20, nightLength = 1;
 
     //privates
-    public float timeOfDay, dayLength = 20, nightLength = 1;
     //[SerializeField] Vector3 terrainSize = Vector3.one;
     [SerializeField] int startVillagerCount = 5;
     [SerializeField] float spawnRadius = 1;
@@ -68,9 +74,6 @@ public class GameManager : MonoBehaviour
     bool _isDayEnding = false, _isPaused = false;
     float _prosperity, _gameSpeed = 1;
 
-    //publics
-    [HideInInspector] public Bounds mapBounds;
-    [HideInInspector] public TerrainGenerator terrain;
 
     void Awake()
     {
@@ -86,6 +89,7 @@ public class GameManager : MonoBehaviour
         StartGame();
         Wood = 10;
         Stone = 10;
+        Food = 10;
     }
 
     void Update()
@@ -111,7 +115,8 @@ public class GameManager : MonoBehaviour
         timeOfDay = 0;
         // +++ GENERATE TERRAIN +++ //
         terrain = FindObjectOfType<TerrainGenerator>();
-        mapBounds = terrain.GenerateTerrain();
+        MapBounds = terrain.GenerateTerrain();
+        //Debug.Log(mapBounds);
         // bind environment objects to their respective job
         Lumberjack.treeArray = terrain.TreePositions;
         Miner.mineArray = terrain.RockPositions;
@@ -121,7 +126,7 @@ public class GameManager : MonoBehaviour
         string villagerJobs = "";
         for (int i = 0; i < startVillagerCount; i++)
         {
-            Vector3 position = mapBounds.center + Quaternion.Euler(0, i * 360 / startVillagerCount, 0) * new Vector3(spawnRadius, 0, 0);
+            Vector3 position = MapBounds.center + Quaternion.Euler(0, i * 360 / startVillagerCount, 0) * new Vector3(spawnRadius, 0, 0);
             Villager villager = PoolManager.instance.SpawnVillager(position);
             //Debug.Log(villager.transform.position);
             villager.AssignJob((Job.Type)i, true);
@@ -132,7 +137,7 @@ public class GameManager : MonoBehaviour
 
         // +++ MISC +++ //
         PlayerCamera pCam = FindObjectOfType<PlayerCamera>();
-        pCam.transform.position = mapBounds.center;
+        pCam.transform.position = MapBounds.center;
     }
 
     void StartDay()
@@ -250,8 +255,9 @@ public class GameManager : MonoBehaviour
 
     public Vector3 GetBoundedPos(Vector3 position, Vector3 objectSize)
     {
-        Bounds adaptedBounds = mapBounds;
+        Bounds adaptedBounds = new Bounds(MapBounds.center, MapBounds.size);
         adaptedBounds.extents -= objectSize * 0.5f;
+        //Debug.Log(adaptedBounds);
         return adaptedBounds.ClosestPoint(position);
         /*Vector3 relativePos = position - plane.transform.position;
         Vector3 basePlaneSize = plane.transform.localScale * 5;

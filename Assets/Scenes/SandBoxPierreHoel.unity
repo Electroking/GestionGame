@@ -1077,7 +1077,7 @@ GameObject:
   - component: {fileID: 254655642}
   - component: {fileID: 254655641}
   m_Layer: 5
-  m_Name: Canvas (Gwendal)
+  m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3101,7 +3101,6 @@ MonoBehaviour:
     type: 3}
   prefabMuseum: {fileID: -411573954586318411, guid: 183821cfcd157114d896b563b2f92de0,
     type: 3}
-  navMeshSurface: {fileID: 0}
   spawnNewVillagers: 0
 --- !u!4 &836104332
 Transform:
@@ -3298,7 +3297,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f97755e2c2da7d44a1001040ad059e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buildingType: 4
+  buildingType: 3
 --- !u!114 &879218670
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5482,7 +5481,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f97755e2c2da7d44a1001040ad059e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buildingType: 3
+  buildingType: 4
 --- !u!114 &1475614061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7055,15 +7054,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxProsperity: 100
+  terrain: {fileID: 0}
   timeOfDay: 0
   dayLength: 20
   nightLength: 1
   startVillagerCount: 5
   spawnRadius: 2
-  mapBounds:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0, y: 0, z: 0}
-  terrain: {fileID: 0}
 --- !u!4 &1935449872
 Transform:
   m_ObjectHideFlags: 0

@@ -85,7 +85,7 @@ public class TerrainGenerator : MonoBehaviour {
             }
         }*/
         //Debug.Log($"Trees: {TreePositions.Length}; Rocks: {RockPositions.Length}; Bushes: {BushPositions.Length}");
-        Bounds mapBounds = new Bounds(new Vector3(tData.size.x, 0, tData.size.z) * 0.5f, new Vector3(tData.size.x, 0, tData.size.z)); ;
+        Bounds mapBounds = new Bounds(new Vector3(tData.size.x, 0, tData.size.z) * 0.5f, new Vector3(tData.size.x, 0, tData.size.z) / 3f); ;
         DrawSquareLine(mapBounds);
         UpdateNavMesh();
 
@@ -113,15 +113,16 @@ public class TerrainGenerator : MonoBehaviour {
         newPosition.y = GameManager.instance.GetTerrainHeight(newPosition);
         return newPosition;
     }
+
     public void DrawSquareLine(Bounds mapBounds)
     {
         float y = 2f;
         lr.transform.position = mapBounds.center;
-        Vector3 squareSize = new Vector3(mapBounds.size.x, 0, mapBounds.size.z) / 6f;
-        Vector3 a = mapBounds.center + new Vector3(-squareSize.x, y, -squareSize.z);
-        Vector3 b = mapBounds.center + new Vector3(-squareSize.x, y, squareSize.z);
-        Vector3 c = mapBounds.center + new Vector3(squareSize.x, y, squareSize.z);
-        Vector3 d = mapBounds.center + new Vector3(squareSize.x, y, -squareSize.z);
-        lr.SetPositions( new Vector3[] {a, b, c, d});
+        //Vector3 squareSize = new Vector3(mapBounds.size.x, 0, mapBounds.size.z) / 6f;
+        Vector3 a = mapBounds.center + new Vector3(-mapBounds.size.x * 0.5f, y, -mapBounds.size.z * 0.5f);
+        Vector3 b = mapBounds.center + new Vector3(-mapBounds.size.x * 0.5f, y, mapBounds.size.z * 0.5f);
+        Vector3 c = mapBounds.center + new Vector3(mapBounds.size.x * 0.5f, y, mapBounds.size.z * 0.5f);
+        Vector3 d = mapBounds.center + new Vector3(mapBounds.size.x * 0.5f, y, -mapBounds.size.z * 0.5f);
+        lr.SetPositions(new Vector3[] {a, b, c, d});
     }
 }

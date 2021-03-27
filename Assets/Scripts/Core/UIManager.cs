@@ -117,9 +117,9 @@ public class UIManager : MonoBehaviour
 
     public void MoveSelectedBuilding(Vector3 terrainPoint)
     {
-        terrainPoint = gm.GetTerrainPos(terrainPoint, _selectedBuilding.transform.localScale);
+        terrainPoint = gm.GetTerrainPos(terrainPoint, _selectedBuilding.transform.GetChild(0).localScale);
         _selectedBuilding.transform.position = terrainPoint;
-        _selectedBuilding.transform.Rotate(0, Input.mouseScrollDelta.y * 45, 0);
+        //_selectedBuilding.transform.Rotate(0, Input.mouseScrollDelta.y * 45, 0);
     }
 
     public void UpdateUI()

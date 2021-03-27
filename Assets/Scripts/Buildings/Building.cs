@@ -35,7 +35,7 @@ public abstract class Building : MonoBehaviour
 
     public enum Type
     {
-        House, School, Farm, Museum, Library
+        House = 0, School = 1, Farm = 2, Museum = 4, Library = 3
     }
 
     private void Awake()
