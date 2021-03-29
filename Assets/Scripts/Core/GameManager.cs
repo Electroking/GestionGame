@@ -248,6 +248,14 @@ public class GameManager : MonoBehaviour
             jango.isExhausted = false;
         }
 
+        for (int i = 0; i < villagersExhausted.Count; i++)
+        {
+            if(villagersExhausted[i].isExhausted)
+            {
+                Prosperity -= 0.005f * maxProsperity;
+            }
+        }
+
         OnDayStarts();
 
         // at the end
