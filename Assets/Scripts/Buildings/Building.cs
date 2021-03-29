@@ -8,15 +8,15 @@ public abstract class Building : MonoBehaviour
 {
     public static List<Building> unbuiltList = new List<Building>();
 
-    public new Collider collider;
+    [HideInInspector] public new Collider collider;
     public Type type;
 
     public List<Villager> builders = new List<Villager>();
-    public bool isPlaced = false;
-    public bool isBuilt = false;
+    [HideInInspector] public bool isPlaced = false;
+    [HideInInspector] public bool isBuilt = false;
     public int resourceS;
     public int resourceW;
-    public float nbBuilder;
+    public int nbBuilder;
 
     float Progression {
         get { return _progression; }
@@ -25,7 +25,7 @@ public abstract class Building : MonoBehaviour
             _model.transform.localPosition = Vector3.up * (2 * _progression / maxProgression - 1);
         }
     }
-    public float maxProgression = 10;
+    [SerializeField] float maxProgression = 10;
     float _progression = 0;
     MeshRenderer[] _renderers;
     NavMeshObstacle _obstacle;
@@ -76,10 +76,11 @@ public abstract class Building : MonoBehaviour
         unbuiltList.Add(this);
         _model.transform.localPosition = -Vector3.up;
         _obstacle.enabled = true;
-        GameManager.instance.terrain.UpdateNavMesh();
+        //GameManager.instance.terrain.UpdateNavMesh();
         return isPlaced = true;
     }
 
+    public void BuildInstant() => Build(maxProgression);
     public void Build(float amount) {
         if(isBuilt) { return; }
         Progression += amount;

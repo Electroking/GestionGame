@@ -7,7 +7,7 @@ public class Lumberjack : Job
 {
     public static Vector3[] treeArray;
     static Dictionary<Vector3, Villager> treeDic = null;
-    float timeToWork = 1, timer = 0;
+    float timeToWork = 3, timer = 0;
 
     public Lumberjack() : base() {
         if(treeDic != null) return;

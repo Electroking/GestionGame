@@ -9,20 +9,18 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager instance = null;
 
-    //Canvas _canvas;
-    Building _selectedBuilding = null;
-    [SerializeField] Text foodText = null, woodText = null, stoneText = null;
-    GameManager gm;
-    //[SerializeField] PopUpInfo[] popUpPanel;
-    [SerializeField] Slider sliderTime;
-    [SerializeField] Slider prospSlider;
     public UIVillagerInfos uiVillager;
 
-    [SerializeField]
-    GameObject panelWin;
-
-    [SerializeField]
-    GameObject panelGO;
+    //Canvas _canvas;
+    [SerializeField] Text foodText = null, woodText = null, stoneText = null;
+    //[SerializeField] PopUpInfo[] popUpPanel;
+    [SerializeField] Slider sliderTime = null;
+    [SerializeField] Slider prospSlider = null;
+    [SerializeField] Text textPlayPause = null;
+    [SerializeField] GameObject panelWin = null;
+    [SerializeField] GameObject panelGO = null;
+    GameManager gm;
+    Building _selectedBuilding = null;
     float dayLenght, timeOfDay, prosp, maxProsp=100;
     //int i = 0;
 
@@ -36,14 +34,14 @@ public class UIManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
 
         //_canvas = FindObjectOfType<Canvas>();
     }
     void Start()
     {
         gm = GameManager.instance;
-        UpdateUI();
+        UpdateResources();
         InitSliderOfTime();
         InitSliderOfProsp();
     }
@@ -90,7 +88,7 @@ public class UIManager : MonoBehaviour
     }
     void LateUpdate()
     {
-        UpdateUI();
+        UpdateResources();
         UpdateSliderOfTime();
         UpdateSliderOfProsp();
     }
@@ -138,7 +136,11 @@ public class UIManager : MonoBehaviour
         //_selectedBuilding.transform.Rotate(0, Input.mouseScrollDelta.y * 45, 0);
     }
 
-    public void UpdateUI()
+    public void UpdatePlayPause() {
+        textPlayPause.text = gm.IsPaused ? "Play" : "Pause";
+    }
+
+    public void UpdateResources()
     {
         foodText.text = "Food : " + gm.Food;
         woodText.text = "Wood : " + gm.Wood;
@@ -256,32 +258,13 @@ public class UIManager : MonoBehaviour
         go.SetActive(!go.activeSelf);
     }
 
-   public void Victory()
+   public void ShowVictoryPanel()
     {
-        if (GameManager.instance.Prosperity >= maxProsp)
-        {
-            panelWin.SetActive(true);
-            Time.timeScale = 0;
-        }
+        panelWin.SetActive(true);
     }
 
-   public void GameOver()
+   public void ShowGameOverPanel()
     {
-        if (Villager.list.Count == 0)
-        {
-            panelGO.SetActive(true);
-            Time.timeScale = 0;
-        }
-    }
-
-    public void ReloadScene()
-    {
-        SceneManager.LoadScene(0);
-        Time.timeScale = 1;
-    }
-
-    public void ExitGame()
-    {
-        Application.Quit();
+        panelGO.SetActive(true);
     }
 }

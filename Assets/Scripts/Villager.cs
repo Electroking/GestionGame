@@ -30,6 +30,7 @@ public class Villager : MonoBehaviour
     GameObject _spriteCircle;
     int _age;
     bool _isWorking = false, _isMoving = false, _isGoingToWork = false;
+    bool _selected = false;
     Vector3 _workplace;
 
     void Awake()
@@ -50,12 +51,15 @@ public class Villager : MonoBehaviour
     void Update()
     {
         if(GameManager.instance.IsPaused) return;
-        if (!isExhausted)
+        if (!isExhausted && !GameManager.instance.isDayEnding)
         {
             GoToWork();
         }
         else
         {
+            if (_agent.hasPath) {
+                _agent.ResetPath();
+            }
             _isWorking = false;
             _isGoingToWork = false;
         }
@@ -157,6 +161,7 @@ public class Villager : MonoBehaviour
 
     public IEnumerator GoToSleep(House house)
     {
+        if (job != null) job.OnGoToSleep();
         while (!Move(house.transform.position))
         {
             yield return null;
@@ -171,10 +176,11 @@ public class Villager : MonoBehaviour
         _mr.enabled = !hide;
         _coll.enabled = !hide;
         _agent.enabled = !hide;
+        _spriteCircle.SetActive(hide ? false : _selected);
     }
 
     public void OnSelect(bool selected) {
-        _spriteCircle.SetActive(selected);
+        _spriteCircle.SetActive(_selected = selected);
     }
 
     public void Die()

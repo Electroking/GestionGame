@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
         set
         {
             _wood = value;
-            UIManager.instance.UpdateUI();
+            UIManager.instance.UpdateResources();
         }
     }
     public int Stone
@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
         set
         {
             _stone = value;
-            UIManager.instance.UpdateUI();
+            UIManager.instance.UpdateResources();
         }
     }
     public int Food
@@ -51,7 +51,7 @@ public class GameManager : MonoBehaviour
         set
         {
             _food = value;
-            UIManager.instance.UpdateUI();
+            UIManager.instance.UpdateResources();
         }
     }
     public bool IsPaused
@@ -61,6 +61,7 @@ public class GameManager : MonoBehaviour
         {
             _isPaused = value;
             ChangeGameSpeed(value ? 0 : _gameSpeed);
+            UIManager.instance.UpdatePlayPause();
         }
     }
     public Bounds MapBounds
@@ -71,13 +72,14 @@ public class GameManager : MonoBehaviour
     //publics
     [HideInInspector] public TerrainGenerator terrain;
     public float timeOfDay, dayLength = 20, nightLength = 1;
+    public bool isDayEnding = false;
 
     //privates
     //[SerializeField] Vector3 terrainSize = Vector3.one;
     [SerializeField] int startVillagerCount = 5;
     [SerializeField] float spawnRadius = 1;
     int _food, _stone, _wood;
-    bool _isDayEnding = false, _isPaused = false;
+    bool _isPaused = false;
     float _prosperity, _gameSpeed = 1;
 
 
@@ -85,7 +87,7 @@ public class GameManager : MonoBehaviour
     {
         if (instance == null) instance = this;
         else if (instance != this) Destroy(gameObject);
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
     }
 
     void Start()
@@ -105,15 +107,15 @@ public class GameManager : MonoBehaviour
             villager.transform.position = Vector3.zero;
             villager.AssignJob((Job.Type)Random.Range(0, 4), true);
         }*/
+        if(GameOver()) return;
+        if(Victory()) return;
 
-        timeOfDay += Time.deltaTime;
-        if (!_isDayEnding && timeOfDay >= dayLength)
+            timeOfDay += Time.deltaTime;
+        if (!isDayEnding && timeOfDay >= dayLength)
         {
-            _isDayEnding = true;
+            isDayEnding = true;
             StartCoroutine(EndDay());
         }
-        UIManager.instance.Victory();
-        UIManager.instance.GameOver();
     }
 
     void StartGame()
@@ -132,8 +134,8 @@ public class GameManager : MonoBehaviour
         House townHall = PoolManager.instance.SpawnTownHall();
         townHall.transform.position = GetTerrainPos(MapBounds.center);
         townHall.Place(true);
-        townHall.Build(townHall.maxProgression);
-        Debug.Log(House.list.Count);
+        townHall.BuildInstant();
+        //Debug.Log(House.list.Count);
 
         // +++ SPAWN VILLAGERS +++ //
         //string villagerJobs = "";
@@ -239,10 +241,11 @@ public class GameManager : MonoBehaviour
         {
             House.list[i].inhabitants.Clear();
         }
+
         for (int i = 0; i < villagersExhausted.Count; i++)
         {
             boba = villagersExhausted[i];
-            for (int j = 0; j < House.list.Count; i++)
+            for (int j = 0; j < House.list.Count; j++)
             {
                 if (House.list[j].inhabitants.Count < House.list[j].maxInhabitant)
                 {
@@ -255,9 +258,8 @@ public class GameManager : MonoBehaviour
         }
 
         // wait for all exhausted villagers to reach a house (if possible)
-        yield return new WaitUntil(() => Villager.listHasSlept.Count >= villagersToBed.Count);
+        yield return new WaitUntil(() => { return Villager.listHasSlept.Count >= villagersToBed.Count; });
         yield return new WaitForSeconds(nightLength);
-        //Debug.Log("After the night !");
         // All villagers who slept arent exhausted anymore
         Villager jango;
         for (int i = 0; i < Villager.listHasSlept.Count; i++)
@@ -279,7 +281,7 @@ public class GameManager : MonoBehaviour
 
         // at the end
         timeOfDay = 0;
-        _isDayEnding = false;
+        isDayEnding = false;
     }
 
     void OnDayEnds() {
@@ -291,15 +293,42 @@ public class GameManager : MonoBehaviour
         UIManager.instance.uiVillager.LockJobChange(false); // enable jobChange
     }
 
-    public void PauseGame(bool pause)
+    public bool Victory() {
+        if(Prosperity >= maxProsperity) {
+            UIManager.instance.ShowVictoryPanel();
+            IsPaused = true;
+            return true;
+        }
+        return false;
+    }
+
+    public bool GameOver() {
+        if(Villager.list.Count == 0) {
+            UIManager.instance.ShowGameOverPanel();
+            IsPaused = true;
+            return true;
+        }
+        return false;
+    }
+
+    public void TogglePause()
     {
-        IsPaused = pause;
+        IsPaused = !IsPaused;
     }
 
     public void ChangeGameSpeed(float timeScale)
     {
         if (timeScale > 0) _gameSpeed = timeScale;
         Time.timeScale = timeScale;
+    }
+
+    public void ReloadScene() {
+        SceneManager.LoadScene(0);
+        //Time.timeScale = 1;
+    }
+
+    public void ExitGame() {
+        Application.Quit();
     }
 
     public Vector3 GetTerrainPos(Vector3 position) => GetTerrainPos(position, Vector3.zero);

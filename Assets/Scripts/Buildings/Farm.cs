@@ -5,6 +5,8 @@ using UnityEngine;
 public class Farm : Building
 {
     public static List<Farm> list = new List<Farm>();
+    public static int multiplier = 2;
+
     public int workersCapacity = 4, nbWorkers;
 
     protected override void OnBuilt()

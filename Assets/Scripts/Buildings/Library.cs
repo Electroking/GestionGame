@@ -6,6 +6,8 @@ public class Library : Building
 {
     public static int nbLibraries;
 
+    [SerializeField] float prosperityPerSecond = 0.2f;
+
     protected override void OnBuilt()
     {
         nbLibraries += 1;
@@ -15,9 +17,9 @@ public class Library : Building
     {
         while (GameManager.instance.Prosperity < GameManager.instance.maxProsperity)
         {
-            yield return new WaitForSeconds(20);
-            GameManager.instance.Prosperity += 1;
-            Debug.Log("Prosperity " + GameManager.instance.Prosperity);
+            yield return null;
+            GameManager.instance.Prosperity += prosperityPerSecond * Time.deltaTime;
+            //Debug.Log("Prosperity " + GameManager.instance.Prosperity);
         }
     }
 }

@@ -8,7 +8,8 @@ public class Builder : Job
     public static List<Villager> idleList = new List<Villager>();
     const int maxBuildersPerBuilding = 2;
     const float workAmountPerSecond = 1f;
-    Building building;
+    
+    public Building building;
 
     public Builder() : base()
     {
@@ -20,6 +21,7 @@ public class Builder : Job
         building.Build(workAmountPerSecond * Time.deltaTime);
         if (building.isBuilt && !idleList.Contains(villager))
         {
+            building = null;
             idleList.Add(villager);
             return true;
         }
@@ -34,6 +36,14 @@ public class Builder : Job
     public override bool GetWorkplacePos(out Vector3 workplace)
     {
         workplace = Vector3.zero;
+        if (building != null) {
+            if (!building.isBuilt) {
+                WorkOnBuilding(building);
+                workplace = building.transform.position;
+                return true;
+            }
+            building = null;
+        }
         Building[] unbuiltBuildings = Building.unbuiltList.ToArray();
         for (int n = 0; n < maxBuildersPerBuilding; n++)
         {
@@ -41,17 +51,25 @@ public class Builder : Job
             {
                 if (!unbuiltBuildings[i].isBuilt && unbuiltBuildings[i].builders.Count == n)
                 {
-                    if (idleList.Contains(villager))
-                    {
-                        idleList.Remove(villager);
-                    }
-                    building = unbuiltBuildings[i];
-                    building.builders.Add(villager);
+                    WorkOnBuilding(unbuiltBuildings[i]);
                     workplace = building.transform.position;
                     return true;
                 }
             }
         }
         return false;
+    }
+
+    void WorkOnBuilding(Building building) {
+        if(idleList.Contains(villager)) {
+            idleList.Remove(villager);
+        }
+        this.building = building;
+        this.building.builders.Add(villager);
+    }
+
+    public override void OnGoToSleep() {
+        base.OnGoToSleep();
+
     }
 }

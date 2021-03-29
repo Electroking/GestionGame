@@ -8,7 +8,7 @@ public class Miner : Job
     public static Vector3[] mineArray;
     static Dictionary<Vector3, Villager> mineDic = null;
 
-    float timeToWork = 1, timer = 0;
+    float timeToWork =3, timer = 0;
 
     public Miner() : base() 
     {

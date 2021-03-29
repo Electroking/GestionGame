@@ -61,6 +61,10 @@ public abstract class Job
 
     public abstract bool DoTheWork();
 
+    public virtual void OnGoToSleep() {
+
+    }
+
     public override string ToString()
     {
         return GetType().Name;

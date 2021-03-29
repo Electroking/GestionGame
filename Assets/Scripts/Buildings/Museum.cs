@@ -7,6 +7,8 @@ public class Museum : Building
     public static int nbMuseums;
     public float nbprosperity;
 
+    [SerializeField] float prosperityPerSecond = 2f;
+
     protected override void OnBuilt()
     {
         nbMuseums += 1;
@@ -16,9 +18,9 @@ public class Museum : Building
     {
         while (GameManager.instance.Prosperity < GameManager.instance.maxProsperity)
         {
-            yield return new WaitForSeconds(20);
-            GameManager.instance.Prosperity += 5;
-            Debug.Log("Prosperity " + GameManager.instance.Prosperity);
+            yield return null;
+            GameManager.instance.Prosperity += prosperityPerSecond * Time.deltaTime;
+            //Debug.Log("Prosperity " + GameManager.instance.Prosperity);
         }
     }
 }

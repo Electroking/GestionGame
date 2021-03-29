@@ -39,6 +39,6 @@ public class Student : Job
     }
 
     public override string ToString() {
-        return base.ToString() + $" ({jobToLearn})";
+        return base.ToString() + $" [{jobToLearn} ({(int)(100 * timer/timeToLearn)}%)]";
     }
 }

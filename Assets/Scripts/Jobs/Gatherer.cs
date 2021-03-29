@@ -7,8 +7,9 @@ public class Gatherer : Job
 {
     public static Vector3[] bushArray;
     static Dictionary<Vector3, Villager> bushDic = null;
-    float timeToWork = 1, timer = 0;
+    float timeToWork = 2, timer = 0;
     bool isWorkingInFarm = false;
+    int foodAmount = 1;
 
     public Gatherer() : base()
     {
@@ -25,7 +26,7 @@ public class Gatherer : Job
         timer += Time.deltaTime;
         if (timer >= timeToWork)
         {
-            GameManager.instance.Food += isWorkingInFarm ? 2 : 1;
+            GameManager.instance.Food += foodAmount * (isWorkingInFarm ? Farm.multiplier : 1);
             timer -= timeToWork;
             return true;
         }
