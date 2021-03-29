@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -198,6 +199,8 @@ public class GameManager : MonoBehaviour
         List<Villager> villagers = new List<Villager>(Villager.list);
         villagers.Sort((v1, v2) => Random.Range(-1, 2));
         for(int i = 0; i < villagers.Count; i++) {
+            villagers[i].Age++;
+            if(villagers[i] == null) continue;
             if(Food > 0) {
                 Food--;
             } else {
@@ -224,8 +227,9 @@ public class GameManager : MonoBehaviour
 
         //Debug.Log("nbHouses = " + House.list.Count + "; nbExhausted = " + villagersExhausted.Count);
 
+        Villager boba;
         for (int i = 0; i < villagersExhausted.Count && i < House.list.Count; i++) {
-            Villager boba = villagersExhausted[i];
+            boba = villagersExhausted[i];
             villagersToBed.Add(boba);
             StartCoroutine(boba.GoToSleep(House.list[i]));
         }
@@ -235,10 +239,16 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(nightLength);
         //Debug.Log("After the night !");
         // All villagers who slept arent exhausted anymore
+        Villager jango;
         for(int i = 0; i < Villager.listHasSlept.Count; i++) {
-            Villager.listHasSlept[i].Hide(false);
-            Villager.listHasSlept[i].isExhausted = false;
+            jango = Villager.listHasSlept[i];
+            jango.Hide(false);
+            jango.isExhausted = false;
         }
+
+        // spawn new Villager
+        PoolManager.instance.SpawnVillagerAtRandomPoint();
+
         // at the end
         timeOfDay = 0;
         _isDayEnding = false;
@@ -304,5 +314,15 @@ public class GameManager : MonoBehaviour
         {
             panelGO.SetActive(true);
         }
+    }
+
+    public void OnClick_Retry()
+    {
+        SceneManager.LoadScene(0);
+    }
+
+    public void OnClick_Exit()
+    {
+        Application.Quit();
     }
 }
