@@ -11,11 +11,14 @@ public class Villager : MonoBehaviour
     static List<string> usedNames = new List<string>();
 
     //public static int nbShouldSleep, nbSleeping;
-    public int Age {
+    public int Age
+    {
         get { return _age; }
-        set {
+        set
+        {
             _age = value;
-            if(_age > lifetime) {
+            if (_age > lifetime)
+            {
                 Debug.Log($"{name} died of old age at {_age - 1} days old.");
                 Die();
             }
@@ -50,14 +53,15 @@ public class Villager : MonoBehaviour
 
     void Update()
     {
-        if(GameManager.instance.IsPaused) return;
+        if (GameManager.instance.IsPaused) return;
         if (!isExhausted && !GameManager.instance.isDayEnding)
         {
             GoToWork();
         }
         else
         {
-            if (_agent.hasPath) {
+            if (_agent.hasPath)
+            {
                 _agent.ResetPath();
             }
             _isWorking = false;
@@ -65,16 +69,21 @@ public class Villager : MonoBehaviour
         }
     }
 
-    string FindName() {
+    string FindName()
+    {
         string name;
         int nbLoop = 0;
-        do {
+        do
+        {
             name = Utils.GetRandomName();
             nbLoop++;
-        } while(usedNames.Contains(name) && nbLoop < 200);
-        if(nbLoop < 200) {
+        } while (usedNames.Contains(name) && nbLoop < 200);
+        if (nbLoop < 200)
+        {
             usedNames.Add(name);
-        } else {
+        }
+        else
+        {
             name = "Anne Honimousse";
         }
         return name;
@@ -145,7 +154,7 @@ public class Villager : MonoBehaviour
                 {
                     _isGoingToWork = false;
                     _isWorking = true;
-                    listHasWorked.Add(this);
+                    // listHasWorked.Add(this); // TODO: memory leak (Work in progress ?)
                 }
             }
         }
@@ -179,7 +188,8 @@ public class Villager : MonoBehaviour
         _spriteCircle.SetActive(hide ? false : _selected);
     }
 
-    public void OnSelect(bool selected) {
+    public void OnSelect(bool selected)
+    {
         _spriteCircle.SetActive(_selected = selected);
     }
 

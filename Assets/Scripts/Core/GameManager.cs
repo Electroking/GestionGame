@@ -107,10 +107,10 @@ public class GameManager : MonoBehaviour
             villager.transform.position = Vector3.zero;
             villager.AssignJob((Job.Type)Random.Range(0, 4), true);
         }*/
-        if(GameOver()) return;
-        if(Victory()) return;
+        if (GameOver()) return;
+        if (Victory()) return;
 
-            timeOfDay += Time.deltaTime;
+        timeOfDay += Time.deltaTime;
         if (!isDayEnding && timeOfDay >= dayLength)
         {
             isDayEnding = true;
@@ -198,12 +198,17 @@ public class GameManager : MonoBehaviour
 
         OnDayEnds();
 
+        for (int i = 0; i < Farm.list.Count; i++)
+        {
+            Farm.list[i].nbWorkers = 0;
+        }
+
         List<Villager> villagers = new List<Villager>(Villager.list);
         villagers.Sort((v1, v2) => Random.Range(-1, 2));
         for (int i = 0; i < villagers.Count; i++)
         {
             villagers[i].Age++;
-            if (villagers[i] == null) continue;
+            if (villagers[i] == null) continue; // TODO: Actually fix the bug (memory leak ?)
             if (Food > 0)
             {
                 Food--;
@@ -258,7 +263,7 @@ public class GameManager : MonoBehaviour
         }
 
         // wait for all exhausted villagers to reach a house (if possible)
-        yield return new WaitUntil(() => { return Villager.listHasSlept.Count >= villagersToBed.Count; });
+        yield return new WaitUntil(() => Villager.listHasSlept.Count >= villagersToBed.Count);
         yield return new WaitForSeconds(nightLength);
         // All villagers who slept arent exhausted anymore
         Villager jango;
@@ -271,7 +276,7 @@ public class GameManager : MonoBehaviour
 
         for (int i = 0; i < villagersExhausted.Count; i++)
         {
-            if(villagersExhausted[i].isExhausted)
+            if (villagersExhausted[i].isExhausted)
             {
                 Prosperity -= 0.005f * maxProsperity;
             }
@@ -284,17 +289,21 @@ public class GameManager : MonoBehaviour
         isDayEnding = false;
     }
 
-    void OnDayEnds() {
+    void OnDayEnds()
+    {
         UIManager.instance.uiVillager.LockJobChange(true); // disable jobChange
     }
 
-    void OnDayStarts() {
+    void OnDayStarts()
+    {
         PoolManager.instance.SpawnVillagerAtRandomPoint(); // spawn new Villager
         UIManager.instance.uiVillager.LockJobChange(false); // enable jobChange
     }
 
-    public bool Victory() {
-        if(Prosperity >= maxProsperity) {
+    public bool Victory()
+    {
+        if (Prosperity >= maxProsperity)
+        {
             UIManager.instance.ShowVictoryPanel();
             IsPaused = true;
             return true;
@@ -302,8 +311,10 @@ public class GameManager : MonoBehaviour
         return false;
     }
 
-    public bool GameOver() {
-        if(Villager.list.Count == 0) {
+    public bool GameOver()
+    {
+        if (Villager.list.Count == 0)
+        {
             UIManager.instance.ShowGameOverPanel();
             IsPaused = true;
             return true;
@@ -322,12 +333,14 @@ public class GameManager : MonoBehaviour
         Time.timeScale = timeScale;
     }
 
-    public void ReloadScene() {
+    public void ReloadScene()
+    {
         SceneManager.LoadScene(0);
         //Time.timeScale = 1;
     }
 
-    public void ExitGame() {
+    public void ExitGame()
+    {
         Application.Quit();
     }
 

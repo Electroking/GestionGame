@@ -54,14 +54,15 @@ public abstract class Job
 
     public Job()
     {
-        
+
     }
 
-    public abstract bool GetWorkplacePos(out Vector3 workplace);
+    public abstract bool GetWorkplacePos(out Vector3 workplace); // TODO: Make a common Method for all Job scripts
 
     public abstract bool DoTheWork();
 
-    public virtual void OnGoToSleep() {
+    public virtual void OnGoToSleep()
+    {
 
     }
 

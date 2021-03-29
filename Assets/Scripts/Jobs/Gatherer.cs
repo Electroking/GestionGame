@@ -10,6 +10,7 @@ public class Gatherer : Job
     float timeToWork = 2, timer = 0;
     bool isWorkingInFarm = false;
     int foodAmount = 1;
+    public Farm farm;
 
     public Gatherer() : base()
     {
@@ -44,7 +45,9 @@ public class Gatherer : Job
                 if (farmListOrdered[i].nbWorkers < farmListOrdered[i].workersCapacity)
                 {
                     workplace = farmListOrdered[i].transform.position;
+                    farm = farmListOrdered[i];
                     isWorkingInFarm = true;
+                    farmListOrdered[i].nbWorkers++;
                     return true;
                 }
             }
