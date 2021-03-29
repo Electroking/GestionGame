@@ -7,16 +7,28 @@ public class Villager : MonoBehaviour
 {
     public static List<Villager> list = new List<Villager>();
     public static List<Villager> listHasWorked = new List<Villager>(), listHasSlept = new List<Villager>();
+    public static int lifetime = 10;
     static List<string> usedNames = new List<string>();
 
     //public static int nbShouldSleep, nbSleeping;
-    public int age;
+    public int Age {
+        get { return _age; }
+        set {
+            _age = value;
+            if(_age > lifetime) {
+                Debug.Log($"{name} died of old age at {_age - 1} days old.");
+                Die();
+            }
+        }
+    }
     public bool isExhausted = false, hasWorked = false;
     public Job job;
 
     NavMeshAgent _agent;
     MeshRenderer _mr;
     Collider _coll;
+    GameObject _spriteCircle;
+    int _age;
     bool _isWorking = false, _isMoving = false, _isGoingToWork = false;
     Vector3 _workplace;
 
@@ -25,13 +37,14 @@ public class Villager : MonoBehaviour
         _mr = GetComponentInChildren<MeshRenderer>();
         _coll = GetComponentInChildren<Collider>();
         _agent = GetComponent<NavMeshAgent>();
+        _spriteCircle = transform.GetChild(1).gameObject;
 
         list.Add(this);
     }
     void Start()
     {
         name = FindName();
-        age = 0;
+        Age = 0;
     }
 
     void Update()
@@ -158,6 +171,10 @@ public class Villager : MonoBehaviour
         _mr.enabled = !hide;
         _coll.enabled = !hide;
         _agent.enabled = !hide;
+    }
+
+    public void OnSelect(bool selected) {
+        _spriteCircle.SetActive(selected);
     }
 
     public void Die()

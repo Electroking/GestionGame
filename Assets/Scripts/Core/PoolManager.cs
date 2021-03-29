@@ -41,12 +41,12 @@ public class PoolManager : MonoBehaviour
     }
     private void Update()
     {
-        if(!spawnNewVillagers) return;
+        /*if(!spawnNewVillagers) return;
         if( Time.time > time)
         {
             SpawnVillager(NewVillagerPos());
             time = Time.time + reload;
-        }
+        }*/
     }
 
     void InitPools()
@@ -74,6 +74,7 @@ public class PoolManager : MonoBehaviour
         return Instantiate(prefabVillager, _poolVillager);
     }
 
+    public Villager SpawnVillagerAtRandomPoint() => SpawnVillager(NewVillagerPos());
     public Villager SpawnVillager(Vector3 spawnPoint)
     {
         Villager villager = UnpoolVillager();

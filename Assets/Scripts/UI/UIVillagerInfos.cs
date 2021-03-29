@@ -11,7 +11,7 @@ public class UIVillagerInfos : MonoBehaviour
 
     private void Update()
     {
-        if(villager == null) return;
+        if (villager == null) return;
         villagerNameTxt.text = villager.name;
     }
 
@@ -20,5 +20,15 @@ public class UIVillagerInfos : MonoBehaviour
         villager.AssignJob(Job.Type.Student);
         Student student = (Student)villager.job;
         student.jobToLearn = (Job.Type)job;
+    }
+
+    public void OnFirstSchoolBuilt()
+    {
+        SetJobChangeButtonInteractable(true);
+    }
+
+    public void SetJobChangeButtonInteractable(bool interactable)
+    {
+        GetComponentInChildren<Button>().interactable = interactable;
     }
 }

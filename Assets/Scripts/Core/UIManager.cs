@@ -236,12 +236,19 @@ public class UIManager : MonoBehaviour
     void OnVillagerClick(Villager villager)
     {
         Debug.Log(villager.name);
+        if(uiVillager.villager != null) {
+            uiVillager.villager.OnSelect(false);
+        }
+        villager.OnSelect(true);
         uiVillager.villager = villager;
         uiVillager.gameObject.SetActive(true);
     }
 
     void DeselectVillager()
     {
+        if (uiVillager.villager != null) {
+            uiVillager.villager.OnSelect(false);
+        }
         uiVillager.gameObject.SetActive(false);
         uiVillager.gameObject.transform.GetChild(2).gameObject.SetActive(false);
     }
