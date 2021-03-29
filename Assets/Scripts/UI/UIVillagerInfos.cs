@@ -24,6 +24,11 @@ public class UIVillagerInfos : MonoBehaviour
 
     public void OnFirstSchoolBuilt()
     {
-        GetComponentInChildren<Button>().interactable = true;
+        SetJobChangeButtonInteractable(true);
+    }
+
+    public void SetJobChangeButtonInteractable(bool interactable)
+    {
+        GetComponentInChildren<Button>().interactable = interactable;
     }
 }
