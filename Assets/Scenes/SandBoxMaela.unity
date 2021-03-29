@@ -426,7 +426,7 @@ MonoBehaviour:
     type: 3}
   prefabMuseum: {fileID: -411573954586318411, guid: 183821cfcd157114d896b563b2f92de0,
     type: 3}
-  spawnNewVillagers: 0
+  spawnNewVillagers: 1
 --- !u!4 &152125280
 Transform:
   m_ObjectHideFlags: 0
@@ -5690,9 +5690,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 50
+  panSpeed: 1
   rotateSpeed: 10
   zMinZoom: -20
   zMaxZoom: -80
+  camAngleMin: 30
+  camAngleMax: 90
 --- !u!4 &1456487919
 Transform:
   m_ObjectHideFlags: 0
