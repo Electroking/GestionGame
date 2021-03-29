@@ -187,7 +187,8 @@ public class GameManager : MonoBehaviour
         timeOfDay = 0;
         isDayEnding = false;*/
 
-        UIManager.instance.uiVillager.SetJobChangeButtonInteractable(false);
+        OnDayEnds();
+
         List<Villager> villagers = new List<Villager>(Villager.list);
         villagers.Sort((v1, v2) => Random.Range(-1, 2));
         for (int i = 0; i < villagers.Count; i++)
@@ -247,13 +248,20 @@ public class GameManager : MonoBehaviour
             jango.isExhausted = false;
         }
 
-        // spawn new Villager
-        PoolManager.instance.SpawnVillagerAtRandomPoint();
+        OnDayStarts();
 
         // at the end
         timeOfDay = 0;
         _isDayEnding = false;
-        UIManager.instance.uiVillager.SetJobChangeButtonInteractable(true);
+    }
+
+    void OnDayEnds() {
+        UIManager.instance.uiVillager.LockJobChange(true); // disable jobChange
+    }
+
+    void OnDayStarts() {
+        PoolManager.instance.SpawnVillagerAtRandomPoint(); // spawn new Villager
+        UIManager.instance.uiVillager.LockJobChange(false); // enable jobChange
     }
 
     public void PauseGame(bool pause)

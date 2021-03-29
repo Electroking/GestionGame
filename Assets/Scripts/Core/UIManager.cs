@@ -74,15 +74,16 @@ public class UIManager : MonoBehaviour
         {
             if (!EventSystem.current.IsPointerOverGameObject())
             {
-                Villager villager;
-                if ((villager = CheckIfOverVillager()) != null)
+                Villager villager = CheckIfOverVillager();
+                OnVillagerClick(villager);
+                /*if ((villager = CheckIfOverVillager()) != null)
                 {
                     OnVillagerClick(villager);
                 }
                 else
                 {
                     DeselectVillager();
-                }
+                }*/
             }
         }
 
@@ -235,23 +236,22 @@ public class UIManager : MonoBehaviour
 
     void OnVillagerClick(Villager villager)
     {
-        Debug.Log(villager.name);
-        if(uiVillager.villager != null) {
-            uiVillager.villager.OnSelect(false);
+        if (villager == null) {
+            uiVillager.ClosePanel();
+        } else {
+            uiVillager.gameObject.SetActive(true);
+            uiVillager.AssignVillager(villager);
         }
-        villager.OnSelect(true);
-        uiVillager.villager = villager;
-        uiVillager.gameObject.SetActive(true);
     }
 
-    void DeselectVillager()
+    /*void DeselectVillager()
     {
         if (uiVillager.villager != null) {
             uiVillager.villager.OnSelect(false);
         }
         uiVillager.gameObject.SetActive(false);
         uiVillager.gameObject.transform.GetChild(2).gameObject.SetActive(false);
-    }
+    }*/
 
     public void SetActiveSwitch(GameObject go)
     {

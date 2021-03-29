@@ -123,6 +123,7 @@ public class TerrainGenerator : MonoBehaviour {
         Vector3 b = mapBounds.center + new Vector3(-mapBounds.size.x * 0.5f, y, mapBounds.size.z * 0.5f);
         Vector3 c = mapBounds.center + new Vector3(mapBounds.size.x * 0.5f, y, mapBounds.size.z * 0.5f);
         Vector3 d = mapBounds.center + new Vector3(mapBounds.size.x * 0.5f, y, -mapBounds.size.z * 0.5f);
+        lr.loop = true;
         lr.SetPositions(new Vector3[] {a, b, c, d});
     }
 }

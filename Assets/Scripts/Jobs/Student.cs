@@ -37,4 +37,8 @@ public class Student : Job
         workplace = School.list[schoolIndex].transform.position;
         return true;
     }
+
+    public override string ToString() {
+        return base.ToString() + $" ({jobToLearn})";
+    }
 }

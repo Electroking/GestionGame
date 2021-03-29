@@ -5,14 +5,37 @@ using UnityEngine.UI;
 
 public class UIVillagerInfos : MonoBehaviour
 {
-    public Villager villager = null;
-    [SerializeField] Text villagerNameTxt;
-    [SerializeField] GameObject jobChangePanel;
+    [SerializeField] Text nameTxt = null, ageTxt = null, exhaustedTxt = null, hasWorkedTxt = null, jobTxt = null;
+    GameObject _jobChangePanel;
+    Button _btnShowJobSelection;
+    Villager villager = null;
+
+    private void Awake() {
+        _jobChangePanel = transform.GetChild(2).gameObject;
+        _btnShowJobSelection = GetComponentInChildren<Button>();
+        _btnShowJobSelection.interactable = false;
+        _jobChangePanel.SetActive(false);
+
+        gameObject.SetActive(false);
+    }
 
     private void Update()
     {
-        if (villager == null) return;
-        villagerNameTxt.text = villager.name;
+        UpdateUI();
+    }
+
+    public void UpdateUI() {
+        if(villager == null) return;
+        // name
+        nameTxt.text = villager.name;
+        // age
+        ageTxt.text = "Age: " + villager.Age;
+        // exhausted
+        exhaustedTxt.text = "Status: " + (villager.isExhausted ? "Exhausted" : "Rested");
+        // has worked today
+        hasWorkedTxt.text = "Has" + (villager.hasWorked ? "" : "n't")+ " worked today";
+        // job
+        jobTxt.text = "Job: " + (villager.job != null ? villager.job.ToString() : "Vagrant");
     }
 
     public void OnJobClick(int job)
@@ -24,11 +47,30 @@ public class UIVillagerInfos : MonoBehaviour
 
     public void OnFirstSchoolBuilt()
     {
-        SetJobChangeButtonInteractable(true);
+        LockJobChange(false);
     }
 
-    public void SetJobChangeButtonInteractable(bool interactable)
+    public void LockJobChange(bool locked)
     {
-        GetComponentInChildren<Button>().interactable = interactable;
+        if(School.list.Count == 0) return;
+        _btnShowJobSelection.interactable = !locked;
+        if(locked) {
+            _jobChangePanel.SetActive(false);
+        }
+    }
+
+    public void AssignVillager(Villager villager) {
+        if (this.villager != null) {
+            this.villager.OnSelect(false);
+        }
+        this.villager = villager;
+        this.villager.OnSelect(true);
+        UpdateUI();
+    }
+
+    public void ClosePanel() {
+        if(villager != null) villager.OnSelect(false);
+        _jobChangePanel.SetActive(false);
+        gameObject.SetActive(false);
     }
 }

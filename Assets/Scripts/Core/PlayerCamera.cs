@@ -36,6 +36,28 @@ public class PlayerCamera : MonoBehaviour
         if(!_panIsUsed && !_translateIsUsed) ZoomCam();
     }
 
+    void RotationMoveCam() {
+        //lmpIsUsed = false;
+        if(Input.GetMouseButtonDown(1)) {
+            _lastMousePos = Input.mousePosition;
+            _rotateIsUsed = true;
+        }
+        if(Input.GetMouseButton(1)) {
+            //lmpIsUsed = true;
+            //Debug.Log(_angleBeforeRotate.x + " | " + _angleBeforeRotate.y);
+            Vector3 swivelRotate = Vector3.up * (0.01f * rotateSpeed * (Input.mousePosition.x - _lastMousePos.x) + _angleBeforeRotate.y);
+            Vector3 hingeRotate = Vector3.right * Mathf.Clamp(0.01f * rotateSpeed * -(Input.mousePosition.y - _lastMousePos.y) + _angleBeforeRotate.x, camAngleMin, camAngleMax);
+            //Debug.Log(hingeRotate + " | " + swivelRotate);
+            transform.rotation = Quaternion.Euler(swivelRotate);
+            _hinge.localRotation = Quaternion.Euler(hingeRotate);
+            //Debug.Log(_hinge.rotation.eulerAngles + " | " + transform.rotation.eulerAngles);
+        }
+        if(Input.GetMouseButtonUp(1)) {
+            _rotateIsUsed = false;
+            UpdateCamAngles();
+        }
+    }
+
     void PanMoveCam() {
         //lmpIsUsed = false;
         if(Input.GetMouseButtonDown(2)) {
@@ -47,6 +69,7 @@ public class PlayerCamera : MonoBehaviour
             //lmpIsUsed = true;
             //transform.rotation = Quaternion.Euler(Vector3.up * 0.01f * rotateSpeed * (Input.mousePosition.x - _lastMousePos.x + _lastRotateY));
             transform.position = _posBeforePan - transform.rotation * new Vector3(Input.mousePosition.x - _lastMousePos.x, 0, Input.mousePosition.y - _lastMousePos.y) * panSpeed * 0.01f;
+            transform.position = GameManager.instance.GetTerrainPos(transform.position);
         }
         if(Input.GetMouseButtonUp(2)) {
             _panIsUsed = false;
@@ -77,32 +100,6 @@ public class PlayerCamera : MonoBehaviour
             transform.position = GameManager.instance.GetTerrainPos(transform.position);
         } else {
             _translateIsUsed = false;
-        }
-    }
-
-    void RotationMoveCam()
-    {
-        //lmpIsUsed = false;
-        if (Input.GetMouseButtonDown(1))
-        {
-            _lastMousePos = Input.mousePosition;
-            _rotateIsUsed = true;
-        }
-        if (Input.GetMouseButton(1))
-        {
-            //lmpIsUsed = true;
-            Debug.Log(_angleBeforeRotate.x + " | " + _angleBeforeRotate.y);
-            Vector3 swivelRotate = Vector3.up * (0.01f * rotateSpeed * (Input.mousePosition.x - _lastMousePos.x) + _angleBeforeRotate.y);
-            Vector3 hingeRotate = Vector3.right * Mathf.Clamp(0.01f * rotateSpeed * -(Input.mousePosition.y - _lastMousePos.y) + _angleBeforeRotate.x, camAngleMin, camAngleMax);
-            Debug.Log(hingeRotate + " | " + swivelRotate);
-            transform.rotation = Quaternion.Euler(swivelRotate);
-            _hinge.localRotation = Quaternion.Euler(hingeRotate);
-            Debug.Log(_hinge.rotation.eulerAngles + " | " + transform.rotation.eulerAngles);
-        }
-        if(Input.GetMouseButtonUp(1))
-        {
-            _rotateIsUsed = false;
-            UpdateCamAngles();
         }
     }
 
