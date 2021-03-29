@@ -8,6 +8,7 @@ public class Gatherer : Job
     public static Vector3[] bushArray;
     static Dictionary<Vector3, Villager> bushDic = null;
     float timeToWork = 1, timer = 0;
+    bool isWorkingInFarm = false;
 
     public Gatherer() : base()
     {
@@ -19,13 +20,12 @@ public class Gatherer : Job
         }
     }
 
-
     public override bool DoTheWork()
     {
         timer += Time.deltaTime;
         if (timer >= timeToWork)
         {
-            GameManager.instance.Food += 1;
+            GameManager.instance.Food += isWorkingInFarm ? 2 : 1;
             timer -= timeToWork;
             return true;
         }
@@ -43,6 +43,7 @@ public class Gatherer : Job
                 if (farmListOrdered[i].nbWorkers < farmListOrdered[i].workersCapacity)
                 {
                     workplace = farmListOrdered[i].transform.position;
+                    isWorkingInFarm = true;
                     return true;
                 }
             }
@@ -56,6 +57,7 @@ public class Gatherer : Job
                 /*Vector3 relative = bushArray[i].transform.position - villager.transform.position;
                 workplace = relative - relative.normalized * bushRadius * bushArray[i].transform.localScale.x + villager.transform.position;*/
                 workplace = bushArray[i];
+                isWorkingInFarm = false;
                 return true;
             }
         }
