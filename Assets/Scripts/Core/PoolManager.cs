@@ -18,7 +18,7 @@ public class PoolManager : MonoBehaviour
     [SerializeField] bool spawnNewVillagers = false;
     Queue<Villager> _pooledVillagers = new Queue<Villager>();
     Transform _poolVillager, _poolBuildings;
-    float time, reload;
+    float time=20, reload;
 
     private void Awake()
     {

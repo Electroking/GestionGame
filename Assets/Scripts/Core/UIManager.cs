@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -16,7 +17,13 @@ public class UIManager : MonoBehaviour
     [SerializeField] Slider sliderTime;
     [SerializeField] Slider prospSlider;
     public UIVillagerInfos uiVillager;
-    float dayLenght, timeOfDay, prosp, maxProsp;
+
+    [SerializeField]
+    GameObject panelWin;
+
+    [SerializeField]
+    GameObject panelGO;
+    float dayLenght, timeOfDay, prosp, maxProsp=100;
     //int i = 0;
 
     private void Awake()
@@ -78,6 +85,7 @@ public class UIManager : MonoBehaviour
                 }
             }
         }
+
     }
     void LateUpdate()
     {
@@ -241,5 +249,31 @@ public class UIManager : MonoBehaviour
     public void SetActiveSwitch(GameObject go)
     {
         go.SetActive(!go.activeSelf);
+    }
+
+   public void Victory()
+    {
+        if (GameManager.instance.Prosperity >= maxProsp)
+        {
+            panelWin.SetActive(true);
+        }
+    }
+
+   public void GameOver()
+    {
+        if (Villager.list.Count == 0)
+        {
+            panelGO.SetActive(true);
+        }
+    }
+
+    public void ReloadScene()
+    {
+        SceneManager.LoadScene(0);
+    }
+
+    public void ExitGame()
+    {
+        Application.Quit();
     }
 }

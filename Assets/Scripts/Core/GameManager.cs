@@ -8,14 +8,6 @@ public class GameManager : MonoBehaviour
     //statics
     public static GameManager instance = null;
 
-    public float maxProsp;
-
-    [SerializeField]
-    GameObject panelWin;
-
-    [SerializeField]
-    GameObject panelGO;
-
     //properties
     public float Prosperity
     {
@@ -115,9 +107,8 @@ public class GameManager : MonoBehaviour
             _isDayEnding = true;
             StartCoroutine(EndDay());
         }
-
-        Victory();
-        GameOver();
+        UIManager.instance.Victory();
+        UIManager.instance.GameOver();
     }
 
     void StartGame()
@@ -291,29 +282,4 @@ public class GameManager : MonoBehaviour
         return 0;
     }
 
-    void Victory()
-    {
-        if(Prosperity >= maxProsp)
-        {
-            panelWin.SetActive(true);
-        }
-    }
-
-    void GameOver()
-    {
-        if(Villager.list.Count==0)
-        {
-            panelGO.SetActive(true);
-        }
-    }
-
-    public void OnClick_Retry()
-    {
-        SceneManager.LoadScene(0);
-    }
-
-    public void OnClick_Exit()
-    {
-        Application.Quit();
-    }
 }
