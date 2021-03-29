@@ -180,6 +180,7 @@ public class Villager : MonoBehaviour
     public void Die()
     {
         list.Remove(this);
+        GameManager.instance.Prosperity -= 0.05f * GameManager.instance.maxProsperity;
         //listHasWorked.Remove(this);
         Destroy(gameObject);
     }
