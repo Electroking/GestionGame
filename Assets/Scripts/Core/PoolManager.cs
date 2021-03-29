@@ -74,6 +74,7 @@ public class PoolManager : MonoBehaviour
         return Instantiate(prefabVillager, _poolVillager);
     }
 
+    public Villager SpawnVillagerAtRandomPoint() => SpawnVillager(NewVillagerPos());
     public Villager SpawnVillager(Vector3 spawnPoint)
     {
         Villager villager = UnpoolVillager();
