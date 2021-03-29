@@ -2970,9 +2970,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 50
+  panSpeed: 8
   rotateSpeed: 10
   zMinZoom: -20
   zMaxZoom: -80
+  camAngleMin: 20
+  camAngleMax: 60
 --- !u!4 &767644710
 Transform:
   m_ObjectHideFlags: 0

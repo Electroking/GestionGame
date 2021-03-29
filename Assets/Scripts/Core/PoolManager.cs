@@ -41,12 +41,12 @@ public class PoolManager : MonoBehaviour
     }
     private void Update()
     {
-        if(!spawnNewVillagers) return;
+        /*if(!spawnNewVillagers) return;
         if( Time.time > time)
         {
             SpawnVillager(NewVillagerPos());
             time = Time.time + reload;
-        }
+        }*/
     }
 
     void InitPools()

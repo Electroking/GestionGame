@@ -27,6 +27,7 @@ public class Villager : MonoBehaviour
     NavMeshAgent _agent;
     MeshRenderer _mr;
     Collider _coll;
+    GameObject _spriteCircle;
     int _age;
     bool _isWorking = false, _isMoving = false, _isGoingToWork = false;
     Vector3 _workplace;
@@ -36,6 +37,7 @@ public class Villager : MonoBehaviour
         _mr = GetComponentInChildren<MeshRenderer>();
         _coll = GetComponentInChildren<Collider>();
         _agent = GetComponent<NavMeshAgent>();
+        _spriteCircle = transform.GetChild(1).gameObject;
 
         list.Add(this);
     }
@@ -169,6 +171,10 @@ public class Villager : MonoBehaviour
         _mr.enabled = !hide;
         _coll.enabled = !hide;
         _agent.enabled = !hide;
+    }
+
+    public void OnSelect(bool selected) {
+        _spriteCircle.SetActive(selected);
     }
 
     public void Die()

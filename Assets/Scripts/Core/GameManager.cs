@@ -133,7 +133,7 @@ public class GameManager : MonoBehaviour
         Gatherer.bushArray = terrain.BushPositions;
 
         // +++ SPAWN VILLAGERS +++ //
-        string villagerJobs = "";
+        //string villagerJobs = "";
         for (int i = 0; i < startVillagerCount; i++)
         {
             Vector3 position = MapBounds.center + Quaternion.Euler(0, i * 360 / startVillagerCount, 0) * new Vector3(spawnRadius, 0, 0);
@@ -141,17 +141,13 @@ public class GameManager : MonoBehaviour
             //Debug.Log(villager.transform.position);
             villager.AssignJob((Job.Type)i, true);
 
-            villagerJobs += $"villager {i}: " + villager.job?.ToString() + "; ";
+            //villagerJobs += $"villager {i}: " + villager.job?.ToString() + "; ";
         }
         //Debug.Log(villagerJobs);
 
         // +++ MISC +++ //
         PlayerCamera pCam = FindObjectOfType<PlayerCamera>();
         pCam.transform.position = MapBounds.center;
-    }
-
-    void StartDay()
-    {
     }
 
     IEnumerator EndDay()
