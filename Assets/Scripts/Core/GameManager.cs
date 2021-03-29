@@ -128,6 +128,13 @@ public class GameManager : MonoBehaviour
         Miner.mineArray = terrain.RockPositions;
         Gatherer.bushArray = terrain.BushPositions;
 
+        // +++ SPAWN BUILDINGS +++ //
+        House townHall = PoolManager.instance.SpawnTownHall();
+        townHall.transform.position = GetTerrainPos(MapBounds.center);
+        townHall.Place(true);
+        townHall.Build(townHall.maxProgression);
+        Debug.Log(House.list.Count);
+
         // +++ SPAWN VILLAGERS +++ //
         //string villagerJobs = "";
         for (int i = 0; i < startVillagerCount; i++)
@@ -228,11 +235,23 @@ public class GameManager : MonoBehaviour
         //Debug.Log("nbHouses = " + House.list.Count + "; nbExhausted = " + villagersExhausted.Count);
 
         Villager boba;
-        for (int i = 0; i < villagersExhausted.Count && i < House.list.Count; i++)
+        for (int i = 0; i < House.list.Count; i++)
+        {
+            House.list[i].inhabitants.Clear();
+        }
+        for (int i = 0; i < villagersExhausted.Count; i++)
         {
             boba = villagersExhausted[i];
-            villagersToBed.Add(boba);
-            StartCoroutine(boba.GoToSleep(House.list[i]));
+            for (int j = 0; j < House.list.Count; i++)
+            {
+                if (House.list[j].inhabitants.Count < House.list[j].maxInhabitant)
+                {
+                    villagersToBed.Add(boba);
+                    House.list[j].inhabitants.Add(boba);
+                    StartCoroutine(boba.GoToSleep(House.list[j]));
+                    break;
+                }
+            }
         }
 
         // wait for all exhausted villagers to reach a house (if possible)

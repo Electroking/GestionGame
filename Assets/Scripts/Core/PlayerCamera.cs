@@ -6,6 +6,7 @@ public class PlayerCamera : MonoBehaviour
 {
     [SerializeField] float speed = 10f, panSpeed = 1f, rotateSpeed = 1f, zMinZoom = -20, zMaxZoom = -80, camAngleMin = 30, camAngleMax = 90;
     bool _rotateIsUsed = false, _translateIsUsed = false, _panIsUsed = false;
+    [SerializeField] bool allowCameraMovByScreenBorders = false;
     //float _angleBeforeRotate = 0f;
     Vector3 _lastMousePos, _posBeforePan, _angleBeforeRotate;
     Transform _hinge, _stick;
@@ -32,7 +33,7 @@ public class PlayerCamera : MonoBehaviour
     void MoveCam() {
         if(!_panIsUsed && !_translateIsUsed) RotationMoveCam();
         if(!_rotateIsUsed && !_translateIsUsed) PanMoveCam();
-        if(!_rotateIsUsed && !_panIsUsed) LateralMoveCam();
+        if(allowCameraMovByScreenBorders && !_rotateIsUsed && !_panIsUsed) LateralMoveCam();
         if(!_panIsUsed && !_translateIsUsed) ZoomCam();
     }
 
@@ -96,7 +97,7 @@ public class PlayerCamera : MonoBehaviour
 
         if(translation != Vector3.zero) {
             _translateIsUsed = true;
-            transform.Translate(translation * Time.deltaTime * speed);
+            transform.Translate(translation * Time.unscaledDeltaTime * speed);
             transform.position = GameManager.instance.GetTerrainPos(transform.position);
         } else {
             _translateIsUsed = false;

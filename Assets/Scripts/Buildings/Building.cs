@@ -21,11 +21,11 @@ public abstract class Building : MonoBehaviour
     float Progression {
         get { return _progression; }
         set {
-            _progression = Mathf.Clamp(value, 0, _maxProgression);
-            _model.transform.localPosition = Vector3.up * (2 * _progression / _maxProgression - 1);
+            _progression = Mathf.Clamp(value, 0, maxProgression);
+            _model.transform.localPosition = Vector3.up * (2 * _progression / maxProgression - 1);
         }
     }
-    [SerializeField] float _maxProgression = 10;
+    public float maxProgression = 10;
     float _progression = 0;
     MeshRenderer[] _renderers;
     NavMeshObstacle _obstacle;
@@ -65,21 +65,25 @@ public abstract class Building : MonoBehaviour
         }
     }
 
-    public bool Place()
+    public bool Place(bool ignoreConditions = false)
     {
-        if (!CheckIfCanBePlaced()) { return false; }
-        if (!CheckifEnoughResources()) { return false; }
-        ExpendResources();
+        if (!ignoreConditions)
+        {
+            if (!CheckIfCanBePlaced()) { return false; }
+            if (!CheckifEnoughResources()) { return false; }
+            ExpendResources();
+        }
         unbuiltList.Add(this);
         _model.transform.localPosition = -Vector3.up;
         _obstacle.enabled = true;
+        GameManager.instance.terrain.UpdateNavMesh();
         return isPlaced = true;
     }
 
     public void Build(float amount) {
         if(isBuilt) { return; }
         Progression += amount;
-        if(Progression >= _maxProgression) {
+        if(Progression >= maxProgression) {
             isBuilt = true;
             unbuiltList.Remove(this);
             //Debug.Log(name + " has been built!");

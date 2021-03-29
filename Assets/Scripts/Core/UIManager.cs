@@ -103,7 +103,6 @@ public class UIManager : MonoBehaviour
             DeselectBuilding(true);
             if (lastBuildingType == (Building.Type)buildingType)
             {
-                UpdateUI();
                 return;
             }
         }
@@ -113,7 +112,6 @@ public class UIManager : MonoBehaviour
         rb.isKinematic = true;
         rb.useGravity = false;
         rb.WakeUp();
-        UpdateUI();
     }
 
     public void DeselectBuilding(bool destroy = false)

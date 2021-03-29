@@ -13,6 +13,7 @@ public class PoolManager : MonoBehaviour
     public Farm prefabFarm = null;
     public Library prefabLibrary = null;
     public Museum prefabMuseum = null;
+    public House prefabTownHall;
 
     NavMeshSurface navMeshSurface = null;
     [SerializeField] bool spawnNewVillagers = false;
@@ -117,5 +118,9 @@ public class PoolManager : MonoBehaviour
                 break;
         }
         return Instantiate(prefabBuilding, _poolBuildings);
+    }
+    public House SpawnTownHall()
+    {
+        return Instantiate(prefabTownHall, _poolBuildings);
     }
 }
