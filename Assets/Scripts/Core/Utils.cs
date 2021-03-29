@@ -21,7 +21,7 @@ public static class Utils {
         "Gautier", "Masson"
     };
     public static string[] fullNameList = new string[] {
-        "Marion La Développeuse"
+        "Marion La Développeuse", "Prune Forge-Code"
     };
 
     public static string GetRandomName() {

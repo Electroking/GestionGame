@@ -76,7 +76,7 @@ public class Villager : MonoBehaviour
 
     public bool Move(Vector3 targetPos)
     {
-        if (!_isMoving)
+        if (!_isMoving || _agent.destination != targetPos)
         {
             bool validDestination = _agent.SetDestination(targetPos);
             //Debug.Log($"validDestination: {validDestination}");
