@@ -12,7 +12,7 @@ public class School : Building
     {
         if (list.Count == 0)
         {
-            UIManager.instance.uiVillager.transform.GetComponentInChildren<Button>().interactable = true;
+            UIManager.instance.uiVillager.OnFirstSchoolBuilt();
         }
         list.Add(this);
     }
