@@ -261,6 +261,7 @@ public class UIManager : MonoBehaviour
         if (GameManager.instance.Prosperity >= maxProsp)
         {
             panelWin.SetActive(true);
+            Time.timeScale = 0;
         }
     }
 
@@ -269,12 +270,14 @@ public class UIManager : MonoBehaviour
         if (Villager.list.Count == 0)
         {
             panelGO.SetActive(true);
+            Time.timeScale = 0;
         }
     }
 
     public void ReloadScene()
     {
         SceneManager.LoadScene(0);
+        Time.timeScale = 1;
     }
 
     public void ExitGame()
