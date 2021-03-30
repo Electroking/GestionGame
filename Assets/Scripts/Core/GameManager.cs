@@ -208,6 +208,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < villagers.Count; i++)
         {
             villagers[i].Age++;
+            Debug.Log(villagers);
             if (villagers[i] == null) continue; // TODO: Actually fix the bug (memory leak ?)
             if (Food > 0)
             {
@@ -263,7 +264,11 @@ public class GameManager : MonoBehaviour
         }
 
         // wait for all exhausted villagers to reach a house (if possible)
-        yield return new WaitUntil(() => Villager.listHasSlept.Count >= villagersToBed.Count);
+        yield return new WaitUntil(() =>
+        {
+            // Debug.Log($"listHasSlept.Count : {Villager.listHasSlept.Count} villagersToBed.Count : {villagersToBed.Count}");
+            return Villager.listHasSlept.Count >= villagersToBed.Count;
+        });
         yield return new WaitForSeconds(nightLength);
         // All villagers who slept arent exhausted anymore
         Villager jango;

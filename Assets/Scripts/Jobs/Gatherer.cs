@@ -29,6 +29,7 @@ public class Gatherer : Job
         {
             GameManager.instance.Food += foodAmount * (isWorkingInFarm ? Farm.multiplier : 1);
             timer -= timeToWork;
+            if (farm != null) farm.nbWorkers--; //TEMPORARY SOLUTION! Because whenever DoTheWork() returns true, GetWorkplacePos is called. TODO: rework the code.
             return true;
         }
         return false;
@@ -47,7 +48,7 @@ public class Gatherer : Job
                     workplace = farmListOrdered[i].transform.position;
                     farm = farmListOrdered[i];
                     isWorkingInFarm = true;
-                    farmListOrdered[i].nbWorkers++;
+                    farm.nbWorkers++;
                     return true;
                 }
             }
