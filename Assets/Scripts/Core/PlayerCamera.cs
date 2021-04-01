@@ -21,7 +21,7 @@ public class PlayerCamera : MonoBehaviour
     {
         Mathf.Clamp(_stick.position.z, zMaxZoom, zMinZoom);
         //_lastMousePos = Input.mousePosition;
-        UpdateCamAngles();
+        //UpdateCamAngles();
     }
 
     // Update is called once per frame
@@ -38,19 +38,22 @@ public class PlayerCamera : MonoBehaviour
     }
 
     void RotationMoveCam() {
-        if(Input.GetMouseButtonDown(1)) { //if right click
-            _lastMousePos = Input.mousePosition;
+        if(Input.GetMouseButtonDown(1)) { //if right click was just pressed
             _rotateIsUsed = true;
+            _lastMousePos = Input.mousePosition;
+            _angleBeforeRotate.y = transform.rotation.eulerAngles.y % 360; //catch the angle and get the value staying from -360 to 360
+            _angleBeforeRotate.x = _hinge.rotation.eulerAngles.x % 360; //catch the angle and get the value staying from -360 to 360
         }
-        if(Input.GetMouseButton(1)) {
-            Vector3 swivelRotate = Vector3.up * (0.01f * rotateSpeed * (Input.mousePosition.x - _lastMousePos.x) + _angleBeforeRotate.y); //set the swivel rotate
-            Vector3 hingeRotate = Vector3.right * Mathf.Clamp(0.01f * rotateSpeed * -(Input.mousePosition.y - _lastMousePos.y) + _angleBeforeRotate.x, camAngleMin, camAngleMax); //set the hinge rotate and clamp it
+        if(Input.GetMouseButton(1)) { //if right click is being pressed
+            float speed = 0.01f * rotateSpeed;
+            Vector3 swivelRotate = Vector3.up * (speed * (Input.mousePosition.x - _lastMousePos.x) + _angleBeforeRotate.y); //set the swivel rotate
+            Vector3 hingeRotate = Vector3.right * Mathf.Clamp(-speed * (Input.mousePosition.y - _lastMousePos.y) + _angleBeforeRotate.x, camAngleMin, camAngleMax); //set the hinge rotate and clamp it
             transform.rotation = Quaternion.Euler(swivelRotate); //use the swivel rotate
             _hinge.localRotation = Quaternion.Euler(hingeRotate); //use the hinge rotate
         }
-        if(Input.GetMouseButtonUp(1)) {
+        if(Input.GetMouseButtonUp(1)) { //if right click is released
             _rotateIsUsed = false;
-            UpdateCamAngles();
+            
         }
     }
 
@@ -119,10 +122,5 @@ public class PlayerCamera : MonoBehaviour
                 }
             }
         }
-    }
-
-    void UpdateCamAngles() {
-        _angleBeforeRotate.y = transform.rotation.eulerAngles.y % 360; //catch the angle and get the value staying from -360 to 360
-        _angleBeforeRotate.x = _hinge.rotation.eulerAngles.x % 360; //catch the angle and get the value staying from -360 to 360
     }
 }
