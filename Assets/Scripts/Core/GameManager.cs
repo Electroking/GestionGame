@@ -118,8 +118,22 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    void ResetAllStatics()
+    {
+        Building.unbuiltList = new List<Building>();
+        Farm.list = new List<Farm>();
+        House.list = new List<House>();
+        School.list = new List<School>();
+        Builder.idleList = new List<Villager>();
+        Villager.list = new List<Villager>();
+        Villager.listHasSlept = new List<Villager>();
+        Villager.listHasWorked = new List<Villager>();
+        Villager.usedNames = new List<string>();
+    }
     void StartGame()
     {
+        IsPaused = false;
+        ResetAllStatics();
         timeOfDay = 0;
         // +++ GENERATE TERRAIN +++ //
         terrain = FindObjectOfType<TerrainGenerator>();
@@ -198,10 +212,6 @@ public class GameManager : MonoBehaviour
 
         OnDayEnds();
 
-        for (int i = 0; i < Farm.list.Count; i++)
-        {
-            Farm.list[i].nbWorkers = 0;
-        }
 
         List<Villager> villagers = new List<Villager>(Villager.list);
         villagers.Sort((v1, v2) => Random.Range(-1, 2));
@@ -209,7 +219,7 @@ public class GameManager : MonoBehaviour
         {
             villagers[i].Age++;
             Debug.Log(villagers);
-            if (villagers[i] == null) continue; // TODO: Actually fix the bug (memory leak ?)
+            if (villagers[i] == null) continue;
             if (Food > 0)
             {
                 Food--;
@@ -220,14 +230,13 @@ public class GameManager : MonoBehaviour
             }
         }
         // Get the list of all villagers who have worked during the day and exhaust them
-        List<Villager> villagersWhoWorked = new List<Villager>();
         List<Villager> villagersExhausted = new List<Villager>();
         for (int i = 0; i < Villager.list.Count; i++)
         {
             if (Villager.list[i].hasWorked)
             {
                 Villager.list[i].isExhausted = true;
-                villagersWhoWorked.Add(Villager.list[i]);
+                Villager.list[i].hasWorked = false;
             }
             if (Villager.list[i].isExhausted)
             {
@@ -335,6 +344,11 @@ public class GameManager : MonoBehaviour
     public void ChangeGameSpeed(float timeScale)
     {
         if (timeScale > 0) _gameSpeed = timeScale;
+        if (IsPaused)
+        {
+            if (timeScale == 0) Time.timeScale = timeScale;
+            return;
+        }
         Time.timeScale = timeScale;
     }
 

@@ -66,6 +66,11 @@ public abstract class Job
 
     }
 
+    public virtual void OnDie()
+    {
+
+    }
+
     public override string ToString()
     {
         return GetType().Name;

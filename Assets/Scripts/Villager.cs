@@ -8,7 +8,7 @@ public class Villager : MonoBehaviour
     public static List<Villager> list = new List<Villager>();
     public static List<Villager> listHasWorked = new List<Villager>(), listHasSlept = new List<Villager>();
     public static int lifetime = 10;
-    static List<string> usedNames = new List<string>();
+    public static List<string> usedNames = new List<string>();
 
     //public static int nbShouldSleep, nbSleeping;
     public int Age
@@ -33,7 +33,7 @@ public class Villager : MonoBehaviour
     GameObject _spriteCircle;
     int _age;
     bool _isWorking = false, _isMoving = false, _isGoingToWork = false;
-    bool _selected = false;
+    bool _selected = false, _booly = false;
     Vector3 _workplace;
 
     void Awake()
@@ -57,8 +57,9 @@ public class Villager : MonoBehaviour
         if (!isExhausted && !GameManager.instance.isDayEnding)
         {
             GoToWork();
+            _booly = false;
         }
-        else
+        else if (!_booly)
         {
             if (_agent.hasPath)
             {
@@ -66,6 +67,7 @@ public class Villager : MonoBehaviour
             }
             _isWorking = false;
             _isGoingToWork = false;
+            _booly = true;
         }
     }
 
@@ -195,6 +197,10 @@ public class Villager : MonoBehaviour
 
     public void Die()
     {
+        if (job != null)
+        {
+            job.OnDie();
+        }
         list.Remove(this);
         GameManager.instance.Prosperity -= 0.05f * GameManager.instance.maxProsperity;
         //listHasWorked.Remove(this);

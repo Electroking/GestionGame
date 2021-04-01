@@ -8,11 +8,14 @@ public class Lumberjack : Job
     public static Vector3[] treeArray;
     static Dictionary<Vector3, Villager> treeDic = null;
     float timeToWork = 3, timer = 0;
+    Vector3? currentTree;
 
-    public Lumberjack() : base() {
-        if(treeDic != null) return;
+    public Lumberjack() : base()
+    {
+        if (treeDic != null) return;
         treeDic = new Dictionary<Vector3, Villager>();
-        for(int i = 0; i < treeArray.Length; i++) {
+        for (int i = 0; i < treeArray.Length; i++)
+        {
             treeDic.Add(treeArray[i], null);
         }
     }
@@ -32,16 +35,18 @@ public class Lumberjack : Job
     public override bool GetWorkplacePos(out Vector3 workplace)
     {
         workplace = Vector3.zero;
+        if (currentTree != null)
+        {
+            workplace = (Vector3)currentTree;
+            return true;
+        }
         treeArray = treeArray.OrderBy((d) => (d - villager.transform.position).sqrMagnitude).ToArray();
         for (int i = 0; i < treeArray.Length; i++)
         {
-            if (treeDic[treeArray[i]] == null || treeDic[treeArray[i]] == villager)
+            if (treeDic[treeArray[i]] == null)
             {
                 treeDic[treeArray[i]] = villager;
-                /*Vector3 relative = treeArray[i].transform.position - villager.transform.position;
-                workplace = relative - relative.normalized * treeRadius * treeArray[i].transform.localScale.x + villager.transform.position;*/
-                // testing 
-                workplace = treeArray[i];
+                currentTree = workplace = treeArray[i];
                 return true;
             }
         }

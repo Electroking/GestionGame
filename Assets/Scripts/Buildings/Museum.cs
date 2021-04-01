@@ -4,14 +4,12 @@ using UnityEngine;
 
 public class Museum : Building
 {
-    public static int nbMuseums;
     public float nbprosperity;
 
     [SerializeField] float prosperityPerSecond = 2f;
 
     protected override void OnBuilt()
     {
-        nbMuseums += 1;
         StartCoroutine(nameof(UpProsperity));
     }
     IEnumerator UpProsperity()

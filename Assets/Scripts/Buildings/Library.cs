@@ -4,13 +4,11 @@ using UnityEngine;
 
 public class Library : Building
 {
-    public static int nbLibraries;
 
     [SerializeField] float prosperityPerSecond = 0.2f;
 
     protected override void OnBuilt()
     {
-        nbLibraries += 1;
         StartCoroutine(nameof(UpProsperity));
     }
     IEnumerator UpProsperity()

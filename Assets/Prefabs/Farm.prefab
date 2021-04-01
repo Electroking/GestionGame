@@ -148,6 +148,8 @@ MonoBehaviour:
   resourceW: 2
   nbBuilder: 0
   maxProgression: 10
+  workersCapacity: 4
+  workers: []
 --- !u!208 &859553563699429737
 NavMeshObstacle:
   m_ObjectHideFlags: 0
