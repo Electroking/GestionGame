@@ -5,10 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    //statics
     public static GameManager instance = null;
 
-    //properties
     public float Prosperity
     {
         get { return _prosperity; }
@@ -69,13 +67,10 @@ public class GameManager : MonoBehaviour
         get; private set;
     }
 
-    //publics
     [HideInInspector] public TerrainGenerator terrain;
     public float timeOfDay, dayLength = 20, nightLength = 1;
     public bool isDayEnding = false;
 
-    //privates
-    //[SerializeField] Vector3 terrainSize = Vector3.one;
     [SerializeField] int startVillagerCount = 5;
     [SerializeField] float spawnRadius = 1;
     int _food, _stone, _wood;
@@ -87,26 +82,15 @@ public class GameManager : MonoBehaviour
     {
         if (instance == null) instance = this;
         else if (instance != this) Destroy(gameObject);
-        //DontDestroyOnLoad(gameObject);
     }
 
     void Start()
     {
         StartGame();
-        Wood = 10;
-        Stone = 10;
-        Food = 10;
     }
 
     void Update()
     {
-        //Debug.Log(GameManager.instance.maxProsperity);
-        /*if (Input.GetMouseButtonDown(0))
-        {
-            Villager villager = PoolManager.instance.UnpoolVillager();
-            villager.transform.position = Vector3.zero;
-            villager.AssignJob((Job.Type)Random.Range(0, 4), true);
-        }*/
         if (GameOver()) return;
         if (Victory()) return;
 
@@ -127,18 +111,18 @@ public class GameManager : MonoBehaviour
         Builder.idleList = new List<Villager>();
         Villager.list = new List<Villager>();
         Villager.listHasSlept = new List<Villager>();
-        Villager.listHasWorked = new List<Villager>();
         Villager.usedNames = new List<string>();
     }
     void StartGame()
     {
-        IsPaused = false;
+        IsPaused = false; // because Timescale is set to 0 when winning or losing a game.
         ResetAllStatics();
         timeOfDay = 0;
+
         // +++ GENERATE TERRAIN +++ //
         terrain = FindObjectOfType<TerrainGenerator>();
         MapBounds = terrain.GenerateTerrain();
-        //Debug.Log(mapBounds);
+
         // bind environment objects to their respective job
         Lumberjack.treeArray = terrain.TreePositions;
         Miner.mineArray = terrain.RockPositions;
@@ -149,77 +133,34 @@ public class GameManager : MonoBehaviour
         townHall.transform.position = GetTerrainPos(MapBounds.center);
         townHall.Place(true);
         townHall.BuildInstant();
-        //Debug.Log(House.list.Count);
 
         // +++ SPAWN VILLAGERS +++ //
-        //string villagerJobs = "";
         for (int i = 0; i < startVillagerCount; i++)
         {
             Vector3 position = MapBounds.center + Quaternion.Euler(0, i * 360 / startVillagerCount, 0) * new Vector3(spawnRadius, 0, 0);
             Villager villager = PoolManager.instance.SpawnVillager(position);
-            //Debug.Log(villager.transform.position);
             villager.AssignJob((Job.Type)i, true);
-
-            //villagerJobs += $"villager {i}: " + villager.job?.ToString() + "; ";
         }
-        //Debug.Log(villagerJobs);
 
         // +++ MISC +++ //
         PlayerCamera pCam = FindObjectOfType<PlayerCamera>();
         pCam.transform.position = MapBounds.center;
+        Wood = 10;
+        Stone = 10;
+        Food = 10;
     }
 
     IEnumerator EndDay()
     {
-        /*int foodDeficit = Villager.list.Count - Food;
-        if (foodDeficit > 0)
-        {
-            for (int i = 0; i < foodDeficit; i++)
-            {
-                Villager.list[Random.Range(0, Villager.list.Count)].Die();
-            }
-        }*/
-
-        /*/ All villagers who have worked during the day are exhausted
-        for (int i = 0; i < Villager.listHasWorked.Count; i++)
-        {
-            Villager.listHasWorked[i].isExhausted = true;
-        }
-        // All exhausted villagers go to sleep
-        Villager.nbSleeping = Villager.nbShouldSleep = 0;
-        Villager.listHasSlept.Clear();
-        for (int i = 0; i < House.list.Count && Villager.listHasWorked.Count > 0; i++)
-        {
-            Villager boba = Villager.listHasWorked[Random.Range(0, Villager.listHasWorked.Count)];
-            StartCoroutine(boba.GoToSleep(House.list[i]));
-            Villager.listHasWorked.Remove(boba);
-            Villager.listHasSlept.Add(boba);
-            Villager.nbShouldSleep++;
-        }
-        // wait for all exhausted villagers to reach a house (if possible)
-        yield return new WaitUntil(() => Villager.nbSleeping >= Villager.nbShouldSleep);
-        yield return new WaitForSeconds(nightLength);
-
-        // All villagers who slept arent exhausted anymore
-        for(int i = 0; i < Villager.listHasSlept.Count; i++) {
-            Villager jango = Villager.listHasSlept[i];
-            jango.isExhausted = false;
-            //Villager.listHasSlept.Remove(jango);
-        }
-        // at the end
-        timeOfDay = 0;
-        isDayEnding = false;*/
-
         OnDayEnds();
 
-
+        // Get the list of villagers, update their age and kill them if not enough food
         List<Villager> villagers = new List<Villager>(Villager.list);
-        villagers.Sort((v1, v2) => Random.Range(-1, 2));
+        villagers.Sort((v1, v2) => Random.Range(-1, 2)); // Randomize the villager list
         for (int i = 0; i < villagers.Count; i++)
         {
             villagers[i].Age++;
-            Debug.Log(villagers);
-            if (villagers[i] == null) continue;
+            if (villagers[i] == null) continue; // if died of old age, don't feed them
             if (Food > 0)
             {
                 Food--;
@@ -229,6 +170,7 @@ public class GameManager : MonoBehaviour
                 villagers[i].Die();
             }
         }
+
         // Get the list of all villagers who have worked during the day and exhaust them
         List<Villager> villagersExhausted = new List<Villager>();
         for (int i = 0; i < Villager.list.Count; i++)
@@ -248,9 +190,6 @@ public class GameManager : MonoBehaviour
         villagersExhausted.Sort((v1, v2) => Random.Range(-1, 2)); // randomize villager order
         Villager.listHasSlept.Clear();
         List<Villager> villagersToBed = new List<Villager>();
-
-        //Debug.Log("nbHouses = " + House.list.Count + "; nbExhausted = " + villagersExhausted.Count);
-
         Villager boba;
         for (int i = 0; i < House.list.Count; i++)
         {
@@ -275,10 +214,10 @@ public class GameManager : MonoBehaviour
         // wait for all exhausted villagers to reach a house (if possible)
         yield return new WaitUntil(() =>
         {
-            // Debug.Log($"listHasSlept.Count : {Villager.listHasSlept.Count} villagersToBed.Count : {villagersToBed.Count}");
             return Villager.listHasSlept.Count >= villagersToBed.Count;
         });
         yield return new WaitForSeconds(nightLength);
+
         // All villagers who slept arent exhausted anymore
         Villager jango;
         for (int i = 0; i < Villager.listHasSlept.Count; i++)
@@ -341,21 +280,24 @@ public class GameManager : MonoBehaviour
         IsPaused = !IsPaused;
     }
 
-    public void ChangeGameSpeed(float timeScale)
+    /// <summary>
+    /// Set the game speed and change the timescale if the game is unpaused.
+    /// </summary>
+    /// <param name="gameSpeed"></param>
+    public void ChangeGameSpeed(float gameSpeed)
     {
-        if (timeScale > 0) _gameSpeed = timeScale;
+        if (gameSpeed > 0) _gameSpeed = gameSpeed;
         if (IsPaused)
         {
-            if (timeScale == 0) Time.timeScale = timeScale;
+            if (gameSpeed == 0) Time.timeScale = gameSpeed;
             return;
         }
-        Time.timeScale = timeScale;
+        Time.timeScale = gameSpeed;
     }
 
     public void ReloadScene()
     {
         SceneManager.LoadScene(0);
-        //Time.timeScale = 1;
     }
 
     public void ExitGame()
@@ -364,6 +306,12 @@ public class GameManager : MonoBehaviour
     }
 
     public Vector3 GetTerrainPos(Vector3 position) => GetTerrainPos(position, Vector3.zero);
+    /// <summary>
+    /// Get a correct position bounded inside the game bounds and at the right height.
+    /// </summary>
+    /// <param name="position"></param>
+    /// <param name="objectSize"></param>
+    /// <returns>The adjusted position.</returns>
     public Vector3 GetTerrainPos(Vector3 position, Vector3 objectSize)
     {
         Vector3 terrainPos = GetBoundedPos(position, objectSize);
@@ -375,19 +323,10 @@ public class GameManager : MonoBehaviour
     {
         Bounds adaptedBounds = new Bounds(MapBounds.center, MapBounds.size);
         adaptedBounds.extents -= objectSize * 0.5f;
-        //Debug.Log(adaptedBounds);
         return adaptedBounds.ClosestPoint(position);
-        /*Vector3 relativePos = position - plane.transform.position;
-        Vector3 basePlaneSize = plane.transform.localScale * 5;
-        if (relativePos.x - objectSize.x < basePlaneSize.x && relativePos.z - objectSize.z < basePlaneSize.z
-            && relativePos.x + objectSize.x > -basePlaneSize.x && relativePos.z + objectSize.z > -basePlaneSize.z) {
-            return position;
-        }
-        Vector3 diffNeg = basePlaneSize + relativePos;
-        Vector3 diffPos = basePlaneSize - relativePos;
-        if (diffNeg.x >= diffPos)*/
     }
 
+    /// <returns>The terrain height at position</returns>
     public float GetTerrainHeight(Vector3 position)
     {
         Vector3 rayOrigin = position;

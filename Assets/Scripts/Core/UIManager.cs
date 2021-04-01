@@ -11,9 +11,7 @@ public class UIManager : MonoBehaviour
 
     public UIVillagerInfos uiVillager;
 
-    //Canvas _canvas;
     [SerializeField] Text foodText = null, woodText = null, stoneText = null;
-    //[SerializeField] PopUpInfo[] popUpPanel;
     [SerializeField] Slider sliderTime = null;
     [SerializeField] Slider prospSlider = null;
     [SerializeField] Text textPlayPause = null;
@@ -63,11 +61,11 @@ public class UIManager : MonoBehaviour
                 }
             }
         }
-        if (leftClick) //if left mouse button is clicked
+        if (leftClick)
         {
             if (!EventSystem.current.IsPointerOverGameObject())
             {
-                Villager villager = CheckIfOverVillager(); //get the villager using raycast
+                Villager villager = GetHoveredVillager(); //get the villager using raycast
                 OnVillagerClick(villager);
             }
         }
@@ -84,15 +82,19 @@ public class UIManager : MonoBehaviour
     {
         if (_selectedBuilding != null)
         {
+            // Deselect the selected building.
             Building.Type lastBuildingType = _selectedBuilding.type;
             DeselectBuilding(true);
             if (lastBuildingType == (Building.Type)buildingType)
             {
-                return; //change the building type
+                // Don't reselect the building when player clicks on this building button a second time.
+                return;
             }
         }
-        _selectedBuilding = PoolManager.instance.SpawnBuilding((Building.Type)buildingType); //spawn a building using type changed before
+        _selectedBuilding = PoolManager.instance.SpawnBuilding((Building.Type)buildingType); //spawn a building using buildingType
         _selectedBuilding.collider.isTrigger = false;
+
+        // Add rigidbody to the selected building to allow for collision checks.
         Rigidbody rb = _selectedBuilding.gameObject.AddComponent<Rigidbody>();
         rb.isKinematic = true;
         rb.useGravity = false;
@@ -105,7 +107,7 @@ public class UIManager : MonoBehaviour
         {
             if (destroy)
             {
-                Destroy(_selectedBuilding.gameObject); //destroy the selected building
+                Destroy(_selectedBuilding.gameObject);
             }
             else if (_selectedBuilding.TryGetComponent(out Rigidbody rb))
             {
@@ -122,7 +124,8 @@ public class UIManager : MonoBehaviour
         _selectedBuilding.transform.position = terrainPoint;
     }
 
-    public void UpdatePlayPause() {
+    public void UpdatePlayPause()
+    {
         textPlayPause.text = gm.IsPaused ? "Play" : "Pause";
     }
 
@@ -132,13 +135,19 @@ public class UIManager : MonoBehaviour
         woodText.text = "Wood : " + gm.Wood;
         stoneText.text = "Stone : " + gm.Stone;
     }
-    void PlaceSelectedBuilding() //place the current building with deselect function
+    void PlaceSelectedBuilding() //place the current building and deselect it
     {
         if (_selectedBuilding.Place())
         {
             DeselectBuilding();
         }
     }
+    /// <summary>
+    /// Get terrain point hovered by cursor.
+    /// </summary>
+    /// <param name="impactPoint">The terrain point hovered if any.</param>
+    /// <param name="ignoreUI"></param>
+    /// <returns><b>True</b> if cursor is over terrain.</returns>
     bool GetTerrainPointHovered(out Vector3 impactPoint, bool ignoreUI = false)
     {
         impactPoint = Vector3.zero;
@@ -146,50 +155,61 @@ public class UIManager : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit, 200, 1 << LayerMask.NameToLayer(Utils.LAYER_TERRAIN)))
         {
-            impactPoint = hit.point; //get the clicked point on the terrain using raycast
-            return true; //and ignore ui if there is an impact point
+            impactPoint = hit.point;
+            return true;
         }
         return false;
     }
-    void InitSliderOfTime() //initialise the time of night slider (it's max value and it's base value)
+    void InitSliderOfTime() //initialise the time of night slider (its max value and its base value)
     {
         sliderTime.maxValue = 1;
         sliderTime.value = gm.timeOfDay;
     }
-    void UpdateSliderOfTime() //update the time of the night using the float "timeOfNight" in gameManager
+    void UpdateSliderOfTime() //update the night slider using the float "timeOfNight" in gameManager
     {
         sliderTime.value = gm.timeOfDay / gm.dayLength;
     }
-    void InitSliderOfProsp() //initialise the prosperity slider (it's max value and it's base value)
+    void InitSliderOfProsp() //initialise the prosperity slider (its max value and its base value)
     {
         prospSlider.maxValue = 1;
         prospSlider.value = gm.Prosperity / gm.maxProsperity;
     }
-    void UpdateSliderOfProsp() //update the prosperity value using the float "prosperity" in gameManager
+    void UpdateSliderOfProsp() //update the prosperity slider using the float "prosperity" in gameManager
     {
         prospSlider.value = gm.Prosperity / gm.maxProsperity;
     }
 
-    Villager CheckIfOverVillager()
+    /// <summary>
+    /// Get the villager hovered by cursor if any.
+    /// </summary>
+    /// <returns>The villager hovered.</returns>
+    Villager GetHoveredVillager()
     {
-        RaycastHit hit; // use a raycast to get a villager
+        RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out hit))
         {
             if (hit.collider.tag == "Villager")
             {
-                return hit.collider.GetComponentInParent<Villager>(); //return the clicked villager
+                return hit.collider.GetComponentInParent<Villager>();
             }
         }
-        return null; //if miss return null
+        return null;
     }
 
+    /// <summary>
+    /// Open villager's UI if villager is not null, otherwise close panel.
+    /// </summary>
+    /// <param name="villager"></param>
     void OnVillagerClick(Villager villager)
     {
-        if (villager == null) { //if it's the second click, close the panel
+        if (villager == null)
+        {
             uiVillager.ClosePanel();
-        } else {
-            uiVillager.gameObject.SetActive(true); //if it's the first, open it
+        }
+        else
+        {
+            uiVillager.gameObject.SetActive(true);
             uiVillager.AssignVillager(villager);
         }
     }
@@ -199,12 +219,12 @@ public class UIManager : MonoBehaviour
         go.SetActive(!go.activeSelf);
     }
 
-   public void ShowVictoryPanel()
+    public void ShowVictoryPanel()
     {
         panelWin.SetActive(true);
     }
 
-   public void ShowGameOverPanel()
+    public void ShowGameOverPanel()
     {
         panelGO.SetActive(true);
     }

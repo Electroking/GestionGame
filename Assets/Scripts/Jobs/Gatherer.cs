@@ -7,14 +7,16 @@ public class Gatherer : Job
 {
     public static Vector3[] bushArray;
     static Dictionary<Vector3, Villager> bushDic = null;
+
+    public Farm farm;
+
     float timeToWork = 2, timer = 0;
     int foodAmount = 1;
-    public Farm farm;
     Vector3? currentBush;
 
-    public Gatherer() : base()
+    public Gatherer() : base() // Initialize bushDic with empty values.
     {
-        if (bushDic != null) return;
+        if (bushDic != null) return; // So only the first Gatherer does it.
         bushDic = new Dictionary<Vector3, Villager>();
         for (int i = 0; i < bushArray.Length; i++)
         {
@@ -29,7 +31,6 @@ public class Gatherer : Job
         {
             GameManager.instance.Food += foodAmount * (farm != null ? Farm.multiplier : 1);
             timer -= timeToWork;
-            // (farm != null) farm.nbWorkers--; //TEMPORARY SOLUTION! Because whenever DoTheWork() returns true, GetWorkplacePos is called. TODO: rework the code.
             return true;
         }
         return false;
@@ -38,13 +39,14 @@ public class Gatherer : Job
     public override bool GetWorkplacePos(out Vector3 workplace)
     {
         workplace = Vector3.zero;
-        if (farm != null)
+        if (farm != null) // If the villager already got a farm, he stays on it.
         {
             workplace = farm.transform.position;
             return true;
         }
         if (Farm.list.Count > 0)
         {
+            // Search for the nearest free place in the farms.
             List<Farm> farmListOrdered = Farm.list.OrderBy((d) => (d.transform.position - villager.transform.position).sqrMagnitude).ToList();
             for (int i = 0; i < farmListOrdered.Count; i++)
             {
@@ -61,11 +63,13 @@ public class Gatherer : Job
                 }
             }
         }
-        if (currentBush != null)
+        if (currentBush != null) // If the villager already got a bush, he stays on it.
         {
             workplace = (Vector3)currentBush;
             return true;
         }
+
+        // Search for the nearest free bush.
         bushArray = bushArray.OrderBy((d) => (d - villager.transform.position).sqrMagnitude).ToArray();
         for (int i = 0; i < bushArray.Length; i++)
         {

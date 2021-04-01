@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class Student : Job
 {
-    float timeToLearn = 20, timer = 0;
     public Job.Type jobToLearn;
+    float timeToLearn = 20, timer = 0;
+
     public Student() : base()
     {
 
@@ -26,6 +27,8 @@ public class Student : Job
     {
         workplace = Vector3.zero;
         if (School.list.Count == 0) return false;
+
+        // Search for the closest school.
         int schoolIndex = 0;
         for (int i = 0; i < School.list.Count; i++)
         {
@@ -38,7 +41,8 @@ public class Student : Job
         return true;
     }
 
-    public override string ToString() {
-        return base.ToString() + $" [{jobToLearn} ({(int)(100 * timer/timeToLearn)}%)]";
+    public override string ToString()
+    {
+        return base.ToString() + $" [{jobToLearn} ({(int)(100 * timer / timeToLearn)}%)]";
     }
 }

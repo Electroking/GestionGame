@@ -4,20 +4,18 @@ using UnityEngine;
 
 public class Library : Building
 {
-
     [SerializeField] float prosperityPerSecond = 0.2f;
 
     protected override void OnBuilt()
     {
-        StartCoroutine(nameof(UpProsperity));
+        StartCoroutine(nameof(IncrementProsperity));
     }
-    IEnumerator UpProsperity()
+    IEnumerator IncrementProsperity()
     {
         while (GameManager.instance.Prosperity < GameManager.instance.maxProsperity)
         {
             yield return null;
             GameManager.instance.Prosperity += prosperityPerSecond * Time.deltaTime;
-            //Debug.Log("Prosperity " + GameManager.instance.Prosperity);
         }
     }
 }

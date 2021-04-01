@@ -15,9 +15,4 @@ public class School : Building
             UIManager.instance.uiVillager.OnFirstSchoolBuilt();
         }
     }
-
-    public void ChangeJob(Villager villager)
-    {
-
-    }
 }

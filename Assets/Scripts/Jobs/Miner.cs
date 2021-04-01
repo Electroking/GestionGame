@@ -12,9 +12,9 @@ public class Miner : Job
 
     float timeToWork = 3, timer = 0;
 
-    public Miner() : base()
+    public Miner() : base() // Initialize mineDic with empty values.
     {
-        if (mineDic != null) return;
+        if (mineDic != null) return; // So only the first Miner does it.
         mineDic = new Dictionary<Vector3, Villager>();
         for (int i = 0; i < mineArray.Length; i++)
         {
@@ -37,19 +37,19 @@ public class Miner : Job
     public override bool GetWorkplacePos(out Vector3 workplace)
     {
         workplace = Vector3.zero;
-        if (currentMine != null)
+        if (currentMine != null) // If the villager already got a mine, he stays on it.
         {
             workplace = (Vector3)currentMine;
             return true;
         }
+
+        // Search for the nearest free mine.
         mineArray = mineArray.OrderBy((d) => (d - villager.transform.position).sqrMagnitude).ToArray();
         for (int i = 0; i < mineArray.Length; i++)
         {
             if (mineDic[mineArray[i]] == null)
             {
                 mineDic[mineArray[i]] = villager;
-                /*Vector3 relative = mineArray[i] - villager.transform.position;
-                workplace = relative - relative.normalized * mineRadius * mineArray[i].transform.localScale.x + villager.transform.position;*/
                 currentMine = workplace = mineArray[i];
                 return true;
             }

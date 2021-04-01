@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class PopUpInfo : MonoBehaviour
 {
-    //Text text;
     [SerializeField] Building.Type buildingType;
 
     private void Awake()

@@ -14,6 +14,7 @@ public class PoolManager : MonoBehaviour
     public Library prefabLibrary = null;
     public Museum prefabMuseum = null;
     public House prefabTownHall;
+
     [SerializeField] bool spawnNewVillagers = false;
     Queue<Villager> _pooledVillagers = new Queue<Villager>();
     Transform _poolVillager, _poolBuildings;
@@ -42,7 +43,7 @@ public class PoolManager : MonoBehaviour
     public void Pool(Villager villager)
     {
         villager.transform.localPosition = Vector3.zero;
-        villager.gameObject.SetActive(true);
+        villager.gameObject.SetActive(false);
         _pooledVillagers.Enqueue(villager);
     }
 
@@ -59,6 +60,9 @@ public class PoolManager : MonoBehaviour
     public Villager SpawnVillager(Vector3 spawnPoint)
     {
         Villager villager = UnpoolVillager(); //get the villager from the queue (or instantiate one if empty)
+        villager.gameObject.SetActive(true);
+        villager.FindName();
+        villager.Age = 0;
         villager.transform.position = GameManager.instance.GetTerrainPos(spawnPoint, villager.transform.GetChild(0).localScale); //set the new villager pos
         return villager;
     }
@@ -67,14 +71,19 @@ public class PoolManager : MonoBehaviour
         Bounds mapBounds = GameManager.instance.MapBounds; //get the mapBounds
         Vector3 minPos = new Vector3(mapBounds.center.x - mapBounds.size.x * 0.5f, 0, mapBounds.center.z - mapBounds.size.z * 0.5f);
         Vector3 maxPos = new Vector3(mapBounds.center.x + mapBounds.size.x * 0.5f, 0, mapBounds.center.z + mapBounds.size.z * 0.5f);
-        float x = Random.Range(minPos.x, maxPos.x); //min = XmapCenter + 1/2 of size, max = XmapCenter + 1/2 of size
-        float z = Random.Range(minPos.z, maxPos.z);  //min = ZmapCenter + 1/2 of size, max = ZmapCenter + 1/2 of size
+        float x = Random.Range(minPos.x, maxPos.x);
+        float z = Random.Range(minPos.z, maxPos.z);
         return new Vector3(x, 0, z); //return a new vector3 with x,z randomized
     }
+    /// <summary>
+    /// Instantiate a bulding of the selected type.
+    /// </summary>
+    /// <param name="buildingType"></param>
+    /// <returns>The instantiated building.</returns>
     public Building SpawnBuilding(Building.Type buildingType)
     {
         Building prefabBuilding = null;
-        switch (buildingType) //change the building type using a switch and prefabs
+        switch (buildingType)
         {
             case Building.Type.House:
                 prefabBuilding = prefabHouse;
@@ -94,10 +103,10 @@ public class PoolManager : MonoBehaviour
             default:
                 break;
         }
-        return Instantiate(prefabBuilding, _poolBuildings); //instantiate a building with the changed building type
+        return Instantiate(prefabBuilding, _poolBuildings);
     }
     public House SpawnTownHall()
     {
-        return Instantiate(prefabTownHall, _poolBuildings); //instantiate the TownHall, is equal to 5 houses
+        return Instantiate(prefabTownHall, _poolBuildings);
     }
 }

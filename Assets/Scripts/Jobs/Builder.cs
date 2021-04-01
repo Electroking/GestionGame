@@ -6,9 +6,10 @@ using UnityEngine;
 public class Builder : Job
 {
     public static List<Villager> idleList = new List<Villager>();
+
     const int maxBuildersPerBuilding = 2;
     const float workAmountPerSecond = 1f;
-    
+
     public Building building;
 
     public Builder() : base()
@@ -19,26 +20,23 @@ public class Builder : Job
     public override bool DoTheWork()
     {
         building.Build(workAmountPerSecond * Time.deltaTime);
-        if (building.isBuilt && !idleList.Contains(villager))
+        if (building.isBuilt && !idleList.Contains(villager)) //Stop the contruction of the building when done.
         {
             building = null;
             idleList.Add(villager);
             return true;
         }
         return false;
-
-        /*if (villager.isExhausted) { yield break; }
-        if (building.isBuilt) {
-            idleList.Add(villager);
-        }*/
     }
 
     public override bool GetWorkplacePos(out Vector3 workplace)
     {
         workplace = Vector3.zero;
-        if (building != null) {
-            if (!building.isBuilt) {
-                WorkOnBuilding(building);
+        if (building != null)
+        {
+            if (!building.isBuilt)
+            {
+                AssignToBuilding(building);
                 workplace = building.transform.position;
                 return true;
             }
@@ -51,7 +49,7 @@ public class Builder : Job
             {
                 if (!unbuiltBuildings[i].isBuilt && unbuiltBuildings[i].builders.Count == n)
                 {
-                    WorkOnBuilding(unbuiltBuildings[i]);
+                    AssignToBuilding(unbuiltBuildings[i]);
                     workplace = building.transform.position;
                     return true;
                 }
@@ -60,16 +58,18 @@ public class Builder : Job
         return false;
     }
 
-    void WorkOnBuilding(Building building) {
-        if(idleList.Contains(villager)) {
+    void AssignToBuilding(Building building)
+    {
+        if (idleList.Contains(villager))
+        {
             idleList.Remove(villager);
         }
         this.building = building;
         this.building.builders.Add(villager);
     }
 
-    public override void OnGoToSleep() {
+    public override void OnGoToSleep()
+    {
         base.OnGoToSleep();
-
     }
 }

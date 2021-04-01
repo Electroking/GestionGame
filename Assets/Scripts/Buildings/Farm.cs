@@ -7,8 +7,8 @@ public class Farm : Building
     public static List<Farm> list = new List<Farm>();
     public static int multiplier = 2;
 
+    [HideInInspector] public List<Villager> workers = new List<Villager>();
     public int workersCapacity = 4;
-    public List<Villager> workers = new List<Villager>();
 
     protected override void OnBuilt()
     {
